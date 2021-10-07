@@ -12,16 +12,30 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js" integrity="sha512-6+YN/9o9BWrk6wSfGxQGpt3EUK6XeHi6yeHV+TYD2GR0Sj/cggRpXr1BrAQf0as6XslxomMUxXp2vIl+fv0QRA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
         let playing = false;
+        let sound = null;
 
         $(document).ready(() => {
             $("body").click(() => {
-                if (playing) return;
-                playing = true;
-                let sound = new Howl({
+                if (sound != null && playing == false) {
+                    alert("Still loading...Try clicking again in a few seconds...");
+                    return;
+                }
+
+                if (playing) {
+                    sound.stop();
+                    playing = false;
+                    return;
+                }
+
+                sound = new Howl({
                     src: ["/etan/ETAN_MASTAPIECE.mp3"],
                     volume: 0.5,
+                    onload: function () {
+                        playing = true;
+                    },
                     onend: function () {
                         playing = false;
+                        sound = null;
                     }
                 });
 

@@ -16,11 +16,6 @@
 
         $(document).ready(() => {
             $("body").click(() => {
-                if (sound != null && playing == false) {
-                    alert("Still loading...Try clicking again in a few seconds...");
-                    return;
-                }
-
                 if (playing) {
                     sound.stop();
                     playing = false;

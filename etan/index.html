@@ -13,29 +13,30 @@
     <script>
         let firstClick = true;
         let sound = null;
+        $(document).ready(() => {
+            $("body").click(() => {
+                if (firstClick) {
+                    sound = new Howl({
+                        src: ["/etan/ETAN_MASTAPIECE.mp3"],
+                        volume: 0.5,
+                        onload: function () {
+                            playing = true;
+                        },
+                        onend: function () {
+                            playing = false;
+                            sound = null;
+                        }
+                    });
+                    firstClick = false;
+                }
 
-        $("body").click(() => {
-            if (firstClick) {
-                sound = new Howl({
-                    src: ["/etan/ETAN_MASTAPIECE.mp3"],
-                    volume: 0.5,
-                    onload: function () {
-                        playing = true;
-                    },
-                    onend: function () {
-                        playing = false;
-                        sound = null;
-                    }
-                });
-                firstClick = false;
-            }
-
-            if (sound.playing())
-            {
-                sound.pause();
-            } else {
-                sound.play();
-            }
+                if (sound.playing())
+                {
+                    sound.pause();
+                } else {
+                    sound.play();
+                }
+            });
         });
     </script>
     <style>

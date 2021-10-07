@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy birthday Ethan</title>
+    <link rel="icon" type="image/png" href="./favicon.png">
+    <link rel="stylesheet" href="https://unpkg.com/normalize.css">
+    <link rel="stylesheet" href="https://unpkg.com/concrete.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js" integrity="sha512-6+YN/9o9BWrk6wSfGxQGpt3EUK6XeHi6yeHV+TYD2GR0Sj/cggRpXr1BrAQf0as6XslxomMUxXp2vIl+fv0QRA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        $(document).ready(() => {
+            $("body").click(() => {
+                var sound = new Howl({
+                    src: ["./ETAN_MASTAPIECE.wav"],
+                    volume: 0.5,
+                    onend: function () {
+                        alert('Finished!');
+                    }
+                });
+                sound.play();
+            });
+        });
+    </script>
+    <style>
+        #main {
+            width: 80%;
+            margin: auto;
+            border: 1px solid #F0F0F0;
+            border-radius: 1%;
+            padding: 1% 4%;
+        }
+
+        h1 {
+            margin: auto;
+            text-align: center;
+        }
+
+        header, footer {
+            padding: 1em;
+            margin: auto;
+            text-align: center;
+            background-color: #010101;
+        }
+
+        #cursed-image {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            width: 50%;
+        }
+        
+        .spacer {
+            height: 2em;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>
+            Happy birthday Ethan!!!
+        </h1>
+    </header>
+    <div class="spacer"></div>
+    <div id="main">
+        <br />
+        <p>
+            From the Aidan, I have to bestow upon you this image:
+        </p>
+
+        <img id="cursed-image" src="./birthday.png" />
+        
+        <p>
+            Why have I done this, I do not know. But I did think of you when I first found it.
+            <br />
+            <br />
+            I will likely have to take it down very soon, but at least you can see it.
+            <br />
+            <br />
+            P.S. click the page.
+        </p>
+    </div>
+    <div class="spacer"></div>
+    <footer>
+        <p>
+            Beep Boop. Its a joop.
+        </p>
+    </footer>
+</body>
+</html>

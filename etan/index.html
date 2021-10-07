@@ -11,15 +11,20 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js" integrity="sha512-6+YN/9o9BWrk6wSfGxQGpt3EUK6XeHi6yeHV+TYD2GR0Sj/cggRpXr1BrAQf0as6XslxomMUxXp2vIl+fv0QRA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
+        let playing = false;
+
         $(document).ready(() => {
             $("body").click(() => {
-                var sound = new Howl({
-                    src: ["/etan/ETAN_MASTAPIECE.wav"],
+                if (playing) return;
+                playing = true;
+                let sound = new Howl({
+                    src: ["/etan/ETAN_MASTAPIECE.mp3"],
                     volume: 0.5,
                     onend: function () {
-                        alert('Finished!');
+                        playing = false;
                     }
                 });
+
                 sound.play();
             });
         });

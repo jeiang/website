@@ -1,0 +1,19 @@
+@import "https://unpkg.com/normalize.css@8.0.1/normalize.css";
+@import "https://unpkg.com/concrete.css@2.0.3/concrete.css";
+@import url("https://fonts.googleapis.com/css?family=Merriweather|Raleway");
+
+$header-font: 'Merriweather', serif;
+$primary-font: 'Raleway', sans-serif;
+
+body {
+  height: 100%;
+  font-family: $primary-font;
+}
+
+@mixin header() {
+  font-family: $header-font;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  @include header();
+}

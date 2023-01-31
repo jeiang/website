@@ -4,13 +4,14 @@
 mod components;
 mod pages;
 mod router;
+mod types;
 
 use yew::prelude::*;
 use yew_router::prelude::*;
 
 use crate::components::footer::Footer;
 use crate::components::navbar::Navbar;
-use crate::router::{switch, Route};
+use crate::router::{root_switch, Route};
 
 #[function_component(App)]
 fn app() -> Html {
@@ -18,7 +19,7 @@ fn app() -> Html {
         <BrowserRouter>
             <Navbar />
             <main class="content">
-                <Switch<Route> render={switch} /> // <- must be child of <BrowserRouter>
+                <Switch<Route> render={root_switch} /> // <- must be child of <BrowserRouter>
             </main>
             <Footer />
         </BrowserRouter>

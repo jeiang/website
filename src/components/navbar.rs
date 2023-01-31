@@ -3,6 +3,8 @@ use yew_router::prelude::*;
 
 use crate::router::Route;
 
+// TODO: Add a customize page for birthday page here
+
 #[function_component(Navbar)]
 pub fn navbar() -> Html {
     html! {

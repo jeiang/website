@@ -1,13 +1,14 @@
+use log::info;
 use yew::prelude::*;
 use yew_router::prelude::*;
 
 use crate::pages::about::About;
-use crate::pages::birthday::{Birthday, YMDDate};
+use crate::pages::birthday::Birthday;
 use crate::pages::contact::Contact;
 use crate::pages::home::Home;
 use crate::pages::not_found::Error404NotFound;
 
-#[derive(Clone, Routable, PartialEq)]
+#[derive(Debug, Clone, Routable, PartialEq)]
 pub enum Route {
     #[at("/")]
     Home,
@@ -15,29 +16,19 @@ pub enum Route {
     About,
     #[at("/contact")]
     Contact,
-    // Need to add a date option
-    #[at("/happy_birthday/:birthday/:first_name/:last_name/")]
-    Birthday {
-        first_name: String,
-        last_name: String,
-        birthday: YMDDate,
-    },
+    #[at("/happy_birthday")]
+    Birthday,
     #[at("/404")]
     NotFound,
 }
 
-pub fn switch(route: Route) -> Html {
+pub fn root_switch(route: Route) -> Html {
+    info!(target: "Router", "Navigating to {route:#?} at {path}", path = route.to_path());
     match route {
         Route::Home => html! { <Home /> },
         Route::About => html! { <About /> },
         Route::Contact => html! { <Contact /> },
-        Route::Birthday {
-            first_name,
-            last_name,
-            birthday,
-        } => {
-            html! { <Birthday first_name={first_name} last_name={last_name} birthday={birthday} /> }
-        },
+        Route::Birthday => html! { <Birthday /> },
         Route::NotFound => html! { <Error404NotFound /> },
     }
 }

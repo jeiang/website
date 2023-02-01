@@ -54,6 +54,42 @@ pub fn about() -> Html {
                 <GHStatsOverview />
                 <GHStatsLanguages />
             </div>
+            <h2>{ "About this site" }</h2>
+            <p>{ "This site was built using the following:" }</p>
+            <ul>
+                <li>
+                    <a href="https://www.rust-lang.org/">{ "Rust" }</a>
+                    { ": Rust is a language for cool kids." }
+                </li>
+                <li>
+                    <a href="https://yew.rs/">{ "Yew" }</a>
+                    { ": Rust framework used to create the page." }
+                </li>
+                <li>
+                    <a href="https://trunkrs.dev/">{ "Trunk" }</a>
+                    { ": Used to bundle the app so I can host on Github." }
+                </li>
+                <li>
+                    <a href="https://concrete.style/">{ "concrete.css" }</a>
+                    { ": Styling for the site. I am not good at styling/designing frontends,
+                        so this made things super easy." }
+                </li>
+                <li>
+                    <a href="https://necolas.github.io/normalize.css/">{ "Normalize.css" }</a>
+                    { ": Recommended by concrete.css." }
+                </li>
+                <li>
+                    <a href="https://fonts.google.com/specimen/Merriweather">{ "Merriweather" }</a>
+                    { " & " }
+                    <a href="https://fonts.google.com/specimen/Raleway">{ "Raleway" }</a>
+                    { ": Fonts used for the page. Merriweather for headings, Raleway for everything else." }
+                </li>
+            </ul>
+            <p>
+                { "Hosted by Porkbun (static hosting). You can find the code on " }
+                <a href="https://github.com/jeiang/website">{ "Github" }</a>
+                { "." }
+            </p>
         </>
     }
 }

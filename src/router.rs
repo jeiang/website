@@ -18,6 +18,7 @@ pub enum Route {
     Contact,
     #[at("/happy_birthday")]
     Birthday,
+    #[not_found]
     #[at("/404")]
     NotFound,
 }

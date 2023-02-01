@@ -10,7 +10,6 @@ keywords = ["yew", "trunk"]
 categories = ["gui", "wasm", "web-programming"]
 
 [dependencies]
-dark-light = "1.0.0"
 instant = { version = "0.1.12", features = ["wasm-bindgen"] }
 js-sys = "0.3.60"
 log = { version = "0.4.17", features = [ "kv_unstable_serde", "max_level_trace", "release_max_level_warn" ] }

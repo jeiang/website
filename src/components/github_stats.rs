@@ -1,5 +1,4 @@
 use yew::prelude::*;
-use yew::Properties;
 
 fn image_html(light_url: &str, dark_url: &str, alt_text: &str) -> Html {
     let light_url = light_url.to_owned();

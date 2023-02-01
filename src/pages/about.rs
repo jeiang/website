@@ -1,12 +1,14 @@
+use log::info;
 use yew::prelude::*;
 
 use crate::components::github_stats::{GHStatsLanguages, GHStatsOverview};
 
 #[function_component(About)]
 pub fn about() -> Html {
-    html! {
-        <>
-            <section>
+    let about = use_memo(
+        |_| {
+            html! {
+             <section>
                 <h2>{ "About Me" }</h2>
                 <p>
                     { "I am from " }
@@ -46,6 +48,14 @@ pub fn about() -> Html {
                     </ul>
                 </p>
             </section>
+            }
+        },
+        (),
+    );
+
+    let hobbies = use_memo(
+        |_| {
+            html! {
             <section>
                 <h2>{ "Hobbies" }</h2>
                 <p>
@@ -72,6 +82,14 @@ pub fn about() -> Html {
                     </ul>
                 </p>
             </section>
+            }
+        },
+        (),
+    );
+
+    let gh_stats = use_memo(
+        |_| {
+            html! {
             <section>
                 <h2>{ "My GitHub Stats" }</h2>
                 <div>
@@ -79,6 +97,14 @@ pub fn about() -> Html {
                     <GHStatsLanguages />
                 </div>
             </section>
+            }
+        },
+        (),
+    );
+
+    let about_site = use_memo(
+        |_| {
+            html! {
             <section>
                 <h2>{ "About this site" }</h2>
                 <p>{ "This site was built using the following:" }</p>
@@ -117,6 +143,17 @@ pub fn about() -> Html {
                     { "." }
                 </p>
             </section>
+            }
+        },
+        (),
+    );
+
+    html! {
+        <>
+        {(*about).clone()}
+        {(*hobbies).clone()}
+        {(*gh_stats).clone()}
+        {(*about_site).clone()}
         </>
     }
 }

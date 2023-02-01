@@ -20,11 +20,6 @@ h1, h2, h3, h4, h5, h6 {
   @include header;
 }
 
-img {
-  max-width: 70%;
-  max-height: 70%;
-}
-
 .content {
   width: 100%;
   margin: auto;
@@ -47,4 +42,8 @@ img {
 
 .center-text {
   text-align: center;
+}
+
+img {
+  width: 100%;
 }

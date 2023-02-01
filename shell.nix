@@ -13,5 +13,6 @@ in pkgs.mkShell {
     bacon
     trunk
     wasm-bindgen-cli
+    binaryen # wasm-pack may need wasm-opt from here
   ];
 }

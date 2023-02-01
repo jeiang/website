@@ -5,45 +5,53 @@
 $header-font: 'Merriweather', serif;
 $primary-font: 'Raleway', sans-serif;
 
-@mixin header() {
+@mixin heading-text() {
   font-family: $header-font;
+}
+
+@mixin padding($vert: 2rem, $horz: 0) {
+  padding: $vert $horz;
 }
 
 body {
   font-family: $primary-font;
+}
+
+main {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  @include header;
-}
-
-.content {
-  width: 100%;
-  margin: auto;
-}
-
-.navbar {
-  width: 95%;
-  margin: 2em;
-  position: sticky;
-  top: 0;
-
-  a:not(:last-child) {
-    margin-right: 1em;    
-  }
-}
-
-.footer {
-  margin-top: auto;
-}
-
-.center-text {
-  text-align: center;
+  @include heading-text;
 }
 
 img {
   width: 100%;
+}
+
+header {
+  @include padding;
+}
+
+footer {
+  margin-top: auto;
+}
+
+section {
+  padding: 0 0 2rem 0;
+}
+
+.main-content {
+  @include padding;
+  margin: auto;
+}
+
+.spacer::after {
+  content: " ";
+}
+
+.center-text {
+  text-align: center;
 }

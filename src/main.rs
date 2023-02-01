@@ -10,18 +10,20 @@ use yew::prelude::*;
 use yew_router::prelude::*;
 
 use crate::components::footer::Footer;
-use crate::components::navbar::Navbar;
+use crate::components::header::Header;
 use crate::router::{root_switch, Route};
 
 #[function_component(App)]
 fn app() -> Html {
     html! {
         <BrowserRouter>
-            <Navbar />
-            <main class="content">
-                <Switch<Route> render={root_switch} /> // <- must be child of <BrowserRouter>
+            <main>
+                <Header />
+                <div class="main-content">
+                    <Switch<Route> render={root_switch} /> // <- must be child of <BrowserRouter>
+                </div>
+                <Footer />
             </main>
-            <Footer />
         </BrowserRouter>
     }
 }

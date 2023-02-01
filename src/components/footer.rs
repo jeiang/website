@@ -4,15 +4,10 @@ use yew::prelude::*;
 pub fn footer() -> Html {
     html! {
         <footer class="footer">
+            <hr />
             <p>
-                {"Built by Aidan Pinard using "}
-                <a href="https://rust-lang.org"> {"Rust "} </a>
-                {"with "}
-                <a href="https://yew.rs/"> {"Yew "} </a>
-                {"and "}
-                <a href="https://trunkrs.dev/"> {"Trunk"} </a>
-                {". Domain by "}
-                <a href="https://porkbun.com/"> {"Porkbun"} </a>
+                {"Made by Aidan Pinard using "}
+                <a href="https://rust-lang.org"> {"Rust"} </a>
                 {"."}
             </p>
         </footer>

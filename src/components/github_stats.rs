@@ -15,7 +15,7 @@ const LANGUAGES_DARK_URL: &str =
 
 #[derive(Properties, PartialEq, Eq, PartialOrd, Ord)]
 pub struct GHStatsProps {
-    #[prop_or(matches!(detect(), Mode::Dark))]
+    #[prop_or(matches!(detect(), Mode::Light))]
     pub is_dark_mode: bool
 }
 

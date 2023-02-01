@@ -28,9 +28,9 @@ pub fn contact() -> Html {
             .collect::<Html>();
             html! {
                 <>
-                    <h2> {"Contact Me!"} </h2>
+                    <h2>{ "Contact Me!" }</h2>
                     <p>
-                        {"You can contact me (or see what I'm up to) via:"}
+                        { "You can contact me (or see what I'm up to) via:" }
                         <ul>
                             { contact_links }
                         </ul>

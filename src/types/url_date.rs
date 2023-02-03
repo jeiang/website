@@ -3,7 +3,6 @@ use std::str::FromStr;
 
 use log::trace;
 use once_cell::sync::Lazy;
-use serde::{Deserialize, Serialize};
 use time::format_description::FormatItem;
 use time::macros::format_description;
 use time::Date;
@@ -51,30 +50,6 @@ impl Display for URLDate {
         } else {
             write!(f, "{}-{}", self.month_u8(), self.day())
         }
-    }
-}
-
-impl<'de> Deserialize<'de> for URLDate {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let s: &str = Deserialize::deserialize(deserializer)?;
-        URLDate::from_str(s).map_err(|_| {
-            serde::de::Error::invalid_value(
-                serde::de::Unexpected::Str(s),
-                &"a valid date in ([year]-)?[month]-[day] format.",
-            )
-        })
-    }
-}
-
-impl Serialize for URLDate {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(&self.to_string())
     }
 }
 

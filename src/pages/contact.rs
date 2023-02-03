@@ -4,9 +4,11 @@ fn create_contact_link(visible_name: &str, url: &str) -> Html {
     let visible_name = visible_name.to_owned();
     let url = url.to_owned();
     html! {
-        <a target="_blank" rel="noopener noreferrer" href={url} key={visible_name.clone()}>
-            {visible_name}
-        </a>
+        <li>
+            <a target="_blank" rel="noopener noreferrer" href={url} key={visible_name.clone()}>
+                {visible_name}
+            </a>
+        </li>
     }
 }
 

@@ -24,7 +24,7 @@ pub enum Route {
 }
 
 pub fn root_switch(route: Route) -> Html {
-    info!(target: "Router", "Navigating to {route:#?} at {path}", path = route.to_path());
+    info!("Navigating to {route:#?} at {path}", path = route.to_path());
     match route {
         Route::Home => html! { <Home /> },
         Route::About => html! { <About /> },

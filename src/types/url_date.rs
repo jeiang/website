@@ -1,7 +1,7 @@
 use std::fmt::Display;
 use std::str::FromStr;
 
-use log::trace;
+use log::{debug, error, warn};
 use once_cell::sync::Lazy;
 use time::format_description::FormatItem;
 use time::macros::format_description;
@@ -62,21 +62,32 @@ impl FromStr for URLDate {
 
         let ymd_date = Date::parse(s, &YMD_FORMAT);
         let md_date = Date::parse(&format!("0000-{s}"), &YMD_FORMAT);
-        trace!(target: "Birthday", "YMD Parse result was {ymd_date:?}. MD parse result was {md_date:?}.");
         match (ymd_date, md_date) {
-            (Ok(date), Ok(_)) => Ok(Self {
-                date,
-                is_valid_year: true,
-            }),
-            (Ok(date), Err(_)) => Ok(Self {
-                date,
-                is_valid_year: true,
-            }),
-            (Err(_), Ok(date)) => Ok(Self {
-                date,
-                is_valid_year: false,
-            }),
-            (Err(err), Err(_)) => Err(err),
+            (Ok(date), Ok(_)) => {
+                warn!("Successfully parsed date in both year-month-day format and month-day format. This should not occur. Defaulting to year-month-day.");
+                Ok(Self {
+                    date,
+                    is_valid_year: true,
+                })
+            },
+            (Ok(date), Err(_)) => {
+                debug!("Successfully parsed date in year-month-day format as {date}.");
+                Ok(Self {
+                    date,
+                    is_valid_year: true,
+                })
+            },
+            (Err(_), Ok(date)) => {
+                debug!("Successfully parsed date in month-day format as {date}.");
+                Ok(Self {
+                    date,
+                    is_valid_year: false,
+                })
+            },
+            (Err(ymd_err), Err(md_err)) => {
+                error!("Failed to parse date. year-month-day format failed because: {ymd_err}. month-day format failed because {md_err}.");
+                Err(ymd_err)
+            },
         }
     }
 }

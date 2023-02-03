@@ -8,16 +8,16 @@ use crate::components::birthday::customize::{BirthdayCustomizer, BirthdayError};
 #[function_component(Birthday)]
 pub fn birthday() -> Html {
     if let Some(location) = use_location() {
-        trace!(target: "Birthday", "Obtained location: {location:#?}.");
+        trace!("Obtained location: {location:#?}.");
         match location.query_str().trim() {
             "" | "?" => {
-                trace!(target: "birthday_router", "No query was provided, going to birthday page customizer.");
+                trace!("No query was provided, going to birthday page customizer.");
                 html! {
                     <BirthdayCustomizer error={None} />
                 }
             },
             c if c.len() == 1 => {
-                log::error!(target: "birthday_router", "Invalid value provided for query string: \"{c}\"");
+                log::error!("Invalid value provided for query string: \"{c}\"");
                 let error = BirthdayError::new("Unexpected query value provided.");
                 html! {
                     <BirthdayCustomizer error={error} />
@@ -31,7 +31,7 @@ pub fn birthday() -> Html {
             },
         }
     } else {
-        trace!(target: "Birthday", "Unable to get location. Creating default page.");
+        trace!("Unable to get location. Creating default page.");
         html! {
             <BirthdayCustomizer error={None} />
         }

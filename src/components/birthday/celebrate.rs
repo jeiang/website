@@ -1,6 +1,6 @@
 use std::str::FromStr;
 
-use log::trace;
+use log::{debug, trace, warn};
 use time::Date;
 use yew::prelude::*;
 
@@ -8,14 +8,18 @@ use crate::types::query_params::QueryParams;
 use crate::types::url_date::URLDate;
 
 // TODO: Say happy belated birthday up to 1 month after birthday
-// TODO: Default page should provide a creator
 // TODO: If one field fails to parse, should redirect to an error page.
 
-// BUG: Many assumptions about conversions & unwraps
 // TODO: Make fallible
 fn date_now() -> Date {
     let current_time = js_sys::Date::new_0();
-    let year = current_time.get_full_year() as i32;
+    let year: i32 = match current_time.get_full_year().try_into() {
+        Ok(year) => year,
+        Err(err) => {
+            warn!("Failed to convert year from u32 to i32 because: {err}. Performing lossy conversion.");
+            current_time.get_full_year() as i32
+        },
+    };
     let month = match current_time.get_month() {
         0 => time::Month::January,
         1 => time::Month::February,
@@ -29,12 +33,28 @@ fn date_now() -> Date {
         9 => time::Month::October,
         10 => time::Month::November,
         11 => time::Month::December,
-        _ => panic!("Expected month to be a number between 0 and 11"),
+        m => {
+            warn!(
+                "Invalid month was provided by `new Date()`: ({m}). Defaulting to December (12)."
+            );
+            time::Month::December
+        },
     };
-    let day = current_time.get_date() as u8;
+    let day: u8 = match current_time.get_date().try_into() {
+        Ok(day) => day,
+        Err(err) => {
+            warn!(
+                "Failed to convert day from u32 to u8 because: {err}. Performing lossy conversion."
+            );
+            current_time.get_date() as u8
+        },
+    };
 
-    let date = Date::from_calendar_date(year, month, day).unwrap();
-    trace!(target: "Birthday", "Current local time is {current_time:?}. This was converted to {date}.");
+    // FIXME: this can break. not expected however.
+    let date = Date::from_calendar_date(year, month, day);
+    let date = date.unwrap();
+    let json_time = current_time.to_json();
+    trace!("Current local time is {json_time}. This was converted to {date}.");
     date
 }
 
@@ -45,7 +65,7 @@ enum Name {
     Full { first: String, last: String },
 }
 
-#[derive(Debug, Default, Clone)]
+#[derive(Debug, Default, Clone, PartialEq)]
 struct BirthdayInfo {
     to: Option<Name>,
     from: Option<Name>,
@@ -53,9 +73,11 @@ struct BirthdayInfo {
     date_of_birth: Option<URLDate>,
 }
 
-impl From<QueryParams> for BirthdayInfo {
-    fn from(value: QueryParams) -> Self {
-        // TODO: clean this up
+impl TryFrom<QueryParams> for BirthdayInfo {
+    // NOTE: this does not "fail", it will return nothing if all fields are none
+    type Error = ();
+
+    fn try_from(value: QueryParams) -> Result<Self, Self::Error> {
         let to_first_name = value
             .get_nonempty_str("to_first_name")
             .map(|s| s.to_string());
@@ -90,14 +112,21 @@ impl From<QueryParams> for BirthdayInfo {
             (Some(first), None) => Some(Name::First(first)),
             (Some(first), Some(last)) => Some(Name::Full { first, last }),
         };
-        let info = Self {
+        let birthday_info = Self {
             to,
             from,
             message,
             date_of_birth,
         };
-        trace!(target: "Birthday", "Parsed params as {info:#?}");
-        info
+
+        // NOTE: check if all fields are none
+        if birthday_info == BirthdayInfo::default() {
+            warn!("None of the required paramters were found in the query.");
+            Err(())
+        } else {
+            trace!("Parsed query parameters as {birthday_info:#?}");
+            Ok(birthday_info)
+        }
     }
 }
 
@@ -109,30 +138,41 @@ pub struct CelebratorProps {
 #[function_component(Celebrator)]
 pub fn create_birthday_content(params: &CelebratorProps) -> Html {
     let current_date = date_now();
-    // TODO: if fail, error page
-    // TODO: handle unwrap
+    // FIXME: Redirect to default page with an error if either of the following two returns Err
     let params: QueryParams = serde_urlencoded::from_str(&params.query).unwrap();
     let BirthdayInfo {
         to,
         from,
         message,
         date_of_birth,
-    } = BirthdayInfo::from(params);
+    } = BirthdayInfo::try_from(params).unwrap_or_default();
 
     let is_birthday = if let Some(date) = &date_of_birth {
-        (current_date.month() == date.month()) && (current_date.day() == date.day())
+        let is_birthday =
+            (current_date.month() == date.month()) && (current_date.day() == date.day());
+        debug!(
+            "Date of birth was provided, calculated that today is {}the birthday.",
+            if is_birthday { "" } else { "not " }
+        );
+        is_birthday
     } else {
+        debug!("");
         true
     };
 
     let age = if let Some(Some(birth_year)) = date_of_birth.as_ref().map(|d| d.year()) {
         if is_birthday {
+            debug!(
+                "Calculating age given that year of birth was provided, and today is the birthday."
+            );
             // If current date is valid, this should not break
             Some(current_date.year() - birth_year)
         } else {
+            debug!("Today is not the birthday, skipping age calc.");
             None
         }
     } else {
+        debug!("No date of birth provided.");
         None
     };
 
@@ -161,17 +201,29 @@ pub fn create_birthday_content(params: &CelebratorProps) -> Html {
 
     let birthday_greeting = use_memo(
         |name| match name {
-            Some(Name::First(first)) => html! {
-                <h2>{ format!("Happy birthday, {first}!") }</h2>
+            Some(Name::First(first)) => {
+                debug!("Detected only first name.");
+                html! {
+                    <h2>{ format!("Happy birthday, {first}!") }</h2>
+                }
             },
-            Some(Name::Last(last)) => html! {
-                <h2>{ format!("Happy birthday, {last}!") }</h2>
+            Some(Name::Last(last)) => {
+                debug!("Detected only last name.");
+                html! {
+                    <h2>{ format!("Happy birthday, {last}!") }</h2>
+                }
             },
-            Some(Name::Full { first, last }) => html! {
-                <h2>{ format!("Happy birthday, {first} {last}!") }</h2>
+            Some(Name::Full { first, last }) => {
+                debug!("Detected full name.");
+                html! {
+                    <h2>{ format!("Happy birthday, {first} {last}!") }</h2>
+                }
             },
-            None => html! {
-                <h2>{ format!("Happy birthday!") }</h2>
+            None => {
+                debug!("No name detected.");
+                html! {
+                    <h2>{ format!("Happy birthday!") }</h2>
+                }
             },
         },
         to,
@@ -185,25 +237,33 @@ pub fn create_birthday_content(params: &CelebratorProps) -> Html {
                 None => None,
             };
             match (message, full_name) {
-                (Some(message), Some(name)) => html! {
-                    <p>
-                        { format!("{name} wanted to tell you on your special day: \"") }
-                        <em>{ message }</em>
-                        { "\"." }
-                    </p>
+                (Some(message), Some(name)) => {
+                    html! {
+                        <p>
+                            { format!("{name} wanted to tell you on your special day: \"") }
+                            <em>{ message }</em>
+                            { "\"." }
+                        </p>
+                    }
                 },
-                (None, Some(name)) => html! {
-                    <p>{ format!("{name} wanted to tell you to have an amazing day!") }</p>
+                (None, Some(name)) => {
+                    html! {
+                        <p>{ format!("{name} wanted to tell you to have an amazing day!") }</p>
+                    }
                 },
-                (Some(message), None) => html! {
-                    <p>
-                        { format!("A special someone wanted to tell you: \"") }
-                        <em>{ message }</em>
-                        { "\"." }
-                    </p>
+                (Some(message), None) => {
+                    html! {
+                        <p>
+                            { format!("A special someone wanted to tell you: \"") }
+                            <em>{ message }</em>
+                            { "\"." }
+                        </p>
+                    }
                 },
-                (None, None) => html! {
-                    <p>{ "We hope you have a great day! And cheers to the years ahead!" }</p>
+                (None, None) => {
+                    html! {
+                        <p>{ "We hope you have a great day! And cheers to the years ahead!" }</p>
+                    }
                 },
             }
         },

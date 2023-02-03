@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use log::trace;
+use log::{debug, trace, warn};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Default, Clone, Serialize, PartialEq)]
@@ -23,9 +23,15 @@ impl<'de> Deserialize<'de> for QueryParams {
     where
         D: serde::Deserializer<'de>,
     {
-        trace!(target: "Query Params", "Deserializing query...");
-        let s: HashMap<&str, String> = Deserialize::deserialize(deserializer)?;
-        trace!(target: "Query Params", "Deserialization successful.");
+        trace!("Deserializing query...");
+        let s: HashMap<&str, String> = match Deserialize::deserialize(deserializer) {
+            Ok(x) => x,
+            Err(err) => {
+                warn!("Failed to deserialize query parameters because: {err}.");
+                return Err(err);
+            },
+        };
+        debug!("Deserialization successful.");
         // Converting to owned, so no dependency on original string lifetime
         let s = s.into_iter().map(|(k, v)| (String::from(k), v)).collect();
         Ok(Self(s))

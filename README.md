@@ -2,33 +2,33 @@
 
 My website, made using [Yew] and built with [Trunk].
 
-## Building & Running
+## Building & Serving
 
-To build & run:
-```bash
-trunk serve
-```
+### The normal way
 
-To build only:
+Using trunk (follow the instructions on [trunk's website](https://trunkrs.dev/#install)):
 ```bash
+# Build output (files are located in dist folder)
 trunk build
-```
 
-Rebuilds the app whenever a change is detected and runs a local server to host it.
+# Build watch, and serve the files
+trunk serve
 
-There's also the `trunk watch` command which does the same thing but without hosting it.
-
-### Release Build
-
-```bash
-trunk build --release
-# or 
+# Add --release to build/serve for "more perf"
 trunk serve --release
 ```
 
-This builds the app in release mode similar to `cargo build --release`.
+After building, other static file servers can serve the files:
+```bash
+static-web-server -d dist/ -p 8080
+ran -r dist/
+```
+If you can set up rewrite urls, you can redirect all links to this app.
 
-Unless overwritten, the output will be located in the `dist` directory.
+### Nix
+
+The nix flake will create a derivation with the contents of dist copied to the nix store, and a script to serve the 
+files. Run `nix build` to build the website, and `nix run` to serve (using `ran`).
 
 ## Acknowledgements Etc
 

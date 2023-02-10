@@ -22,12 +22,17 @@
         };
 
         cargoToml = builtins.fromTOML (builtins.readFile ./Cargo.toml);
-      in {
-        defaultPackage = rustPlatform.buildRustPackage rec {
-            pname = cargoToml.package.name;
-            version = cargoToml.package.version;
+        inherit (cargoToml.package) name;
+        inherit (cargoToml.package) version;
+      in rec {
+        packages = flake-utils.lib.flattenTree {
+          ${cargoToml.package.name} = rustPlatform.buildRustPackage {
+            pname = name;
+            inherit version;
             src = ./.;
 
+            # Required for serve app
+            # TODO: define in serve app
             buildInputs = with pkgs; [
               trunk
             ];
@@ -48,14 +53,25 @@
             buildPhase = "trunk build --release";
             installPhase = ''
               cp -r dist $out
-              mkdir $out/bin
-              echo "trunk serve -d $out" > $out/bin/${pname}
-              chmod +x $out/bin/${pname}
             '';
 
             # Needs to be set to an existing folder
+            # TODO: Set up build cache ahead of time
             XDG_CACHE_HOME = "/tmp/build-cache";
           };
+        };
+
+        defaultPackage = packages.${cargoToml.package.name};
+
+        apps.serve = flake-utils.lib.mkApp (let 
+          script = pkgs.writeScriptBin "${name}" '' 
+            ${pkgs.ran}/bin/ran -r ${defaultPackage}
+          '';
+        in {
+          drv = script;
+        });
+
+        defaultApp = apps.serve;
 
         devShell = pkgs.mkShell {
           name = "rust web-dev shell";
@@ -83,4 +99,3 @@
       }
     );
 }
-

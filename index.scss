@@ -1,0 +1,57 @@
+@import "https://unpkg.com/normalize.css@8.0.1/normalize.css";
+@import "https://unpkg.com/concrete.css@2.0.3/concrete.css";
+@import url("https://fonts.googleapis.com/css?family=Merriweather|Raleway");
+
+$header-font: 'Merriweather', serif;
+$primary-font: 'Raleway', sans-serif;
+
+@mixin heading-text() {
+  font-family: $header-font;
+}
+
+@mixin padding($vert: 2rem, $horz: 0) {
+  padding: $vert $horz;
+}
+
+body {
+  font-family: $primary-font;
+}
+
+main {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  @include heading-text;
+}
+
+img {
+  width: 100%;
+}
+
+header {
+  @include padding;
+}
+
+footer {
+  margin-top: auto;
+}
+
+section {
+  padding: 0 0 2rem 0;
+}
+
+.main-content {
+  @include padding;
+  margin: auto;
+}
+
+.spacer::after {
+  content: " ";
+}
+
+.center-text {
+  text-align: center;
+}

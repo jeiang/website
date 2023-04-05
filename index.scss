@@ -1,6 +1,6 @@
 @import "https://unpkg.com/normalize.css@8.0.1/normalize.css";
 @import "https://unpkg.com/concrete.css@2.0.3/concrete.css";
-@import url("https://fonts.googleapis.com/css?family=Merriweather|Raleway");
+@import url("https://fonts.googleapis.com/css?family=Merriweather|Raleway&display=swap");
 
 $header-font: 'Merriweather', serif;
 $primary-font: 'Raleway', sans-serif;
@@ -9,12 +9,16 @@ $primary-font: 'Raleway', sans-serif;
   font-family: $header-font;
 }
 
+@mixin regular-text() {
+  font-family: $primary-font;
+}
+
 @mixin padding($vert: 2rem, $horz: 0) {
   padding: $vert $horz;
 }
 
 body {
-  font-family: $primary-font;
+  @include regular-text;
 }
 
 main {

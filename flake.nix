@@ -24,6 +24,21 @@
         cargoToml = builtins.fromTOML (builtins.readFile ./Cargo.toml);
         inherit (cargoToml.package) name;
         inherit (cargoToml.package) version;
+
+        deps = with pkgs; [
+          perseus-cli
+          rustToolchain
+          wasm-bindgen-cli
+          binaryen
+          nodePackages.sass
+          pkgconfig
+        ];
+
+        runtimeDeps = with pkgs; [
+          bacon
+          zlib
+        ];
+
       in rec {
         packages = flake-utils.lib.flattenTree {
           ${cargoToml.package.name} = rustPlatform.buildRustPackage {
@@ -31,23 +46,11 @@
             inherit version;
             src = ./.;
 
-            # Required for serve app
-            # TODO: define in serve app
-            buildInputs = with pkgs; [
-              trunk
-            ];
-          
-            nativeBuildInputs = with pkgs; [
-              binaryen
-              nodePackages.sass
-              pkgconfig
-              rustToolchain
-              trunk
-              wasm-bindgen-cli
-            ];
+            nativeBuildInputs = deps;
 
             cargoLock = { lockFile = ./Cargo.lock; };
 
+            # todo fix this
             # avoid the double compile caused by trunk build & cargo check
             doCheck = false;
             buildPhase = "trunk build --release";
@@ -63,6 +66,7 @@
 
         defaultPackage = packages.${cargoToml.package.name};
 
+        # TODO: change this
         apps.serve = flake-utils.lib.mkApp (let 
           script = pkgs.writeScriptBin "${name}" '' 
             ${pkgs.ran}/bin/ran -r ${defaultPackage}
@@ -77,17 +81,7 @@
           name = "rust web-dev shell";
           src = ./.;
 
-          nativeBuildInputs = with pkgs; [
-            bacon
-            binaryen
-            nodePackages.sass
-            pkgconfig
-            rustToolchain
-            rust-analyzer
-            trunk
-            wasm-bindgen-cli
-            zlib
-          ];
+          buildInputs = deps ++ runtimeDeps;
           
           shellHook = ''
             export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${

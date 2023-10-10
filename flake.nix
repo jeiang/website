@@ -1,95 +1,181 @@
 {
   inputs = {
-    flake-utils.url = "github:numtide/flake-utils";
-    naersk.url = "github:nix-community/naersk";
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    flake-compat = {
+      url = "github:edolstra/flake-compat";
+      flake = false;
+    };
+
+    devenv.url = "github:cachix/devenv";
+    nix2container = {
+      url = "github:nlewo/nix2container";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    mk-shell-bin.url = "github:rrbutani/nix-mk-shell-bin";
+
+    flake-parts = {
+      url = "github:hercules-ci/flake-parts";
+      inputs.nixpkgs-lib.follows = "nixpkgs";
+    };
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     rust-overlay.url = "github:oxalica/rust-overlay";
   };
 
-  outputs = { self, flake-utils, naersk, nixpkgs, rust-overlay, ... }:
-    flake-utils.lib.eachDefaultSystem (system:
-      let
-        pkgs = (import nixpkgs) {
-          inherit system;
-          overlays = [ (import rust-overlay) ];
-        };
+  nixConfig = {
+    extra-trusted-public-keys = "devenv.cachix.org-1:w1cLUi8dv3hnoSPGAuibQv+f9TZLr6cv/Hm9XgU50cw=";
+    extra-substituters = "https://devenv.cachix.org";
+  };
 
-        rustToolchain = pkgs.rust-bin.fromRustupToolchainFile ./rust-toolchain.toml;
+  outputs = {
+    nixpkgs,
+    devenv,
+    flake-parts,
+    treefmt-nix,
+    rust-overlay,
+    ...
+  } @ inputs:
+    flake-parts.lib.mkFlake {inherit inputs;} {
+      imports = [
+        devenv.flakeModule
+        treefmt-nix.flakeModule
+      ];
 
-        rustPlatform = pkgs.makeRustPlatform {
-          rustc = rustToolchain;
-          cargo = rustToolchain;
-        };
+      systems = nixpkgs.lib.systems.flakeExposed;
 
+      perSystem = {
+        config,
+        pkgs,
+        system,
+        ...
+      }: let
         cargoToml = builtins.fromTOML (builtins.readFile ./Cargo.toml);
         inherit (cargoToml.package) name;
+        inherit (cargoToml.package) edition;
         inherit (cargoToml.package) version;
+        toolchain = pkgs.rust-bin.fromRustupToolchainFile ./rust-toolchain.toml;
+        rustPlatform = pkgs.makeRustPlatform {
+          rustc = toolchain;
+          cargo = toolchain;
+        };
 
-        deps = with pkgs; [
+        build-deps = with pkgs; [
           perseus-cli
-          rustToolchain
           wasm-bindgen-cli
           binaryen
-          nodePackages.sass
-          pkgconfig
+          pkg-config
         ];
+      in {
+        _module.args.pkgs = import inputs.nixpkgs {
+          inherit system;
+          overlays = [
+            (import rust-overlay)
+            (final: _prev: {
+              #
+              perseus-cli = final.rustPlatform.buildRustPackage rec {
+                pname = "perseus-cli";
+                version = "0.4.2";
 
-        runtimeDeps = with pkgs; [
-          bacon
-          zlib
-        ];
+                src = final.fetchCrate {
+                  inherit pname version;
+                  sha256 = "sha256-Qq+DQOJP11A5WMG+l3F1Uh+VjK7A9fKej2UOmFIIYXs=";
+                };
 
-      in rec {
-        packages = flake-utils.lib.flattenTree {
-          ${cargoToml.package.name} = rustPlatform.buildRustPackage {
-            pname = name;
-            inherit version;
-            src = ./.;
+                cargoSha256 = "sha256-W1colldWSJ9/M3C8lWxgHCVGgksS9grzFZsMLd4ZFAo=";
 
-            nativeBuildInputs = deps;
+                nativeBuildInputs = with final; [makeWrapper pkg-config];
+                buildInputs = with pkgs; [openssl];
 
-            cargoLock = { lockFile = ./Cargo.lock; };
+                postInstall = ''
+                  wrapProgram $out/bin/perseus \
+                    --prefix PATH : "${final.lib.makeBinPath [final.wasm-pack]}"
+                '';
 
-            # todo fix this
-            # avoid the double compile caused by trunk build & cargo check
-            doCheck = false;
-            buildPhase = "trunk build --release";
-            installPhase = ''
-              cp -r dist $out
-            '';
+                # Disable tests for https://github.com/framesurge/perseus/issues/305
+                doCheck = false;
 
-            # Needs to be set to an existing folder
-            # TODO: Set up build cache ahead of time
-            XDG_CACHE_HOME = "/tmp/build-cache";
+                meta = with final.lib; {
+                  homepage = "https://framesurge.sh/perseus/en-US";
+                  description = "A high-level web development framework for Rust with full support for server-side rendering and static generation";
+                  maintainers = with maintainers; [max-niederman];
+                  license = with licenses; [mit];
+                  mainProgram = "perseus";
+                };
+              };
+            })
+          ];
+        };
+
+        packages.default = config.packages.${name};
+        packages.${name} = rustPlatform.buildRustPackage {
+          pname = name;
+          inherit version;
+
+          src = ./.;
+          nativeBuildInputs = build-deps;
+
+          cargoLock = {lockFile = ./Cargo.lock;};
+
+          buildPhase = ''
+            # TODO: build
+          '';
+          installPhase = ''
+            cp -r dist $out
+          '';
+
+          # Needs to be set to an existing folder
+          # TODO: Set up build cache ahead of time
+          XDG_CACHE_HOME = "/tmp/build-cache";
+        };
+
+        apps.${name} = {
+          type = "app";
+          program = "${config.packages.${name}}/bin/${name}";
+        };
+
+        devenv.shells.default = {
+          packages = with pkgs;
+            [
+              bacon
+              lldb
+              commitizen
+              config.treefmt.build.wrapper
+            ]
+            ++ build-deps;
+
+          languages.nix.enable = true;
+          languages.rust.enable = true;
+          languages.rust.toolchain = {
+            cargo = toolchain;
+            clippy = toolchain;
+            rust-analyzer = toolchain;
+            rustc = toolchain;
+            rustfmt = toolchain;
+          };
+
+          pre-commit.hooks.commitizen.enable = true;
+          pre-commit.hooks.clippy.enable = true;
+          pre-commit.hooks.convco.enable = true;
+          pre-commit.hooks.treefmt.enable = true;
+
+          pre-commit.settings.treefmt.package = config.treefmt.build.wrapper;
+
+          difftastic.enable = true;
+        };
+
+        treefmt = {
+          projectRootFile = "flake.nix";
+          programs = {
+            alejandra.enable = true;
+            deadnix.enable = true;
+            rustfmt.enable = true;
+            rustfmt.package = toolchain;
+            rustfmt.edition = edition;
           };
         };
-
-        defaultPackage = packages.${cargoToml.package.name};
-
-        # TODO: change this
-        apps.serve = flake-utils.lib.mkApp (let 
-          script = pkgs.writeScriptBin "${name}" '' 
-            ${pkgs.ran}/bin/ran -r ${defaultPackage}
-          '';
-        in {
-          drv = script;
-        });
-
-        defaultApp = apps.serve;
-
-        devShell = pkgs.mkShell {
-          name = "rust web-dev shell";
-          src = ./.;
-
-          buildInputs = deps ++ runtimeDeps;
-          
-          shellHook = ''
-            export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${
-            pkgs.lib.makeLibraryPath [ pkgs.zlib ]
-          }"'';
-
-          RUST_BACKTRACE = 1;
-        };
-      }
-    );
+      };
+    };
 }

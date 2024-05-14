@@ -1,38 +1,22 @@
-# aidanpinard.co Website
+# Aidan's Website(s)
 
-My website, made using [Yew] and built with [Trunk].
+My website, made using the TRASH stack. :)
 
-## Building & Serving
+## Building & Running
 
-### The normal way
+### Cargo
 
-Using trunk (follow the instructions on [trunk's website](https://trunkrs.dev/#install)):
-```bash
-# Build output (files are located in dist folder)
-trunk build
-
-# Build watch, and serve the files
-trunk serve
-
-# Add --release to build/serve for "more perf"
-trunk serve --release
-```
-
-After building, other static file servers can serve the files:
-```bash
-static-web-server -d dist/ -p 8080
-ran -r dist/
-```
-If you can set up rewrite urls, you can redirect all links to this app.
+Build and run the project with `cargo run`. The project will be available at `localhost:9001`.
 
 ### Nix
 
-The nix flake will create a derivation with the contents of dist copied to the nix store, and a script to serve the 
-files. Run `nix build` to build the website, and `nix run` to serve (using `ran`).
+To be implemented.
+
+## Currently used on
+
+- [aidanpinard.co](https://aidanpinard.co)
+- [pinard.co.tt](https://pinard.co.tt)
 
 ## Acknowledgements Etc
 
-[This flake for the yew template](https://github.com/OliverEvans96/yew-trunk-minimal-template).
-
-[trunk]: https://github.com/thedodd/trunk
-[yew]: https://github.com/yewstack/yew
+[Ryde, which is library used to implement the "stack"? used for this (TRASH: Tailwind, Rust, Axum, Sqlite and HTMX)](https://github.com/swlkr/ryde)

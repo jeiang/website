@@ -1,101 +1,97 @@
 {
+  description = "my website";
+
   inputs = {
-    flake-utils.url = "github:numtide/flake-utils";
-    naersk.url = "github:nix-community/naersk";
-    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    rust-overlay.url = "github:oxalica/rust-overlay";
+    devenv-root = {
+      url = "file+file:///dev/null";
+      flake = false;
+    };
+    nixpkgs.url = "github:cachix/devenv-nixpkgs/rolling";
+    devenv.url = "github:cachix/devenv";
+    nix2container.url = "github:nlewo/nix2container";
+    nix2container.inputs.nixpkgs.follows = "nixpkgs";
+    mk-shell-bin.url = "github:rrbutani/nix-mk-shell-bin";
+    fenix.url = "github:nix-community/fenix";
+    fenix.inputs.nixpkgs.follows = "nixpkgs";
+    treefmt-nix.url = "github:numtide/treefmt-nix";
   };
 
-  outputs = { self, flake-utils, naersk, nixpkgs, rust-overlay, ... }:
-    flake-utils.lib.eachDefaultSystem (system:
-      let
-        pkgs = (import nixpkgs) {
-          inherit system;
-          overlays = [ (import rust-overlay) ];
-        };
+  nixConfig = {
+    extra-trusted-public-keys = "devenv.cachix.org-1:w1cLUi8dv3hnoSPGAuibQv+f9TZLr6cv/Hm9XgU50cw=";
+    extra-substituters = "https://devenv.cachix.org";
+  };
 
-        rustToolchain = pkgs.rust-bin.fromRustupToolchainFile ./rust-toolchain.toml;
+  outputs = inputs@{ flake-parts, devenv-root, ... }:
+    flake-parts.lib.mkFlake { inherit inputs; } {
+      imports = [
+        inputs.devenv.flakeModule
+        inputs.treefmt-nix.flakeModule
+      ];
+      systems = [ "x86_64-linux" "aarch64-darwin" ];
 
-        rustPlatform = pkgs.makeRustPlatform {
-          rustc = rustToolchain;
-          cargo = rustToolchain;
-        };
+      perSystem = { config, pkgs, ... }: {
+        devenv.shells.default = {
+          devenv.root =
+            let
+              devenvRootFileContent = builtins.readFile devenv-root.outPath;
+            in
+            pkgs.lib.mkIf (devenvRootFileContent != "") devenvRootFileContent;
 
-        cargoToml = builtins.fromTOML (builtins.readFile ./Cargo.toml);
-        inherit (cargoToml.package) name;
-        inherit (cargoToml.package) version;
-      in rec {
-        packages = flake-utils.lib.flattenTree {
-          ${cargoToml.package.name} = rustPlatform.buildRustPackage {
-            pname = name;
-            inherit version;
-            src = ./.;
+          name = "website-dev";
 
-            # Required for serve app
-            # TODO: define in serve app
-            buildInputs = with pkgs; [
-              trunk
-            ];
-          
-            nativeBuildInputs = with pkgs; [
-              binaryen
-              nodePackages.sass
-              pkgconfig
-              rustToolchain
-              trunk
-              wasm-bindgen-cli
-            ];
+          # https://devenv.sh/reference/options/
+          packages = with pkgs; [
+            sqlite
+            tailwindcss
+            fish
+            bacon
+            cargo-expand
+          ];
 
-            cargoLock = { lockFile = ./Cargo.lock; };
+          languages = {
+            rust = {
+              enable = true;
+              channel = "nightly";
+              targets = [
+                "x86_64-unknown-linux-gnu"
+                "aarch64-apple-darwin"
+              ];
+            };
+            nix.enable = true;
+          };
+          process.implementation = "overmind";
+          processes.tailwind.exec = ''
+            ROOT=$(git rev-parse --show-toplevel)
+            tailwindcss --config "$ROOT/config/tailwind.config.js" -i "$ROOT/src/index.css" -o "$ROOT/src/static/index.css" --watch
+          '';
 
-            # avoid the double compile caused by trunk build & cargo check
-            doCheck = false;
-            buildPhase = "trunk build --release";
-            installPhase = ''
-              cp -r dist $out
-            '';
-
-            # Needs to be set to an existing folder
-            # TODO: Set up build cache ahead of time
-            XDG_CACHE_HOME = "/tmp/build-cache";
+          pre-commit.hooks = {
+            editorconfig-checker.enable = true;
+            markdownlint = {
+              enable = true;
+              settings.configuration = {
+                "MD013" = {
+                  "line_length" = 120;
+                };
+              };
+            };
+            nil.enable = true;
+            statix.enable = true;
+            treefmt = {
+              enable = true;
+              package = config.treefmt.build.wrapper;
+            };
           };
         };
-
-        defaultPackage = packages.${cargoToml.package.name};
-
-        apps.serve = flake-utils.lib.mkApp (let 
-          script = pkgs.writeScriptBin "${name}" '' 
-            ${pkgs.ran}/bin/ran -r ${defaultPackage}
-          '';
-        in {
-          drv = script;
-        });
-
-        defaultApp = apps.serve;
-
-        devShell = pkgs.mkShell {
-          name = "rust web-dev shell";
-          src = ./.;
-
-          nativeBuildInputs = with pkgs; [
-            bacon
-            binaryen
-            nodePackages.sass
-            pkgconfig
-            rustToolchain
-            rust-analyzer
-            trunk
-            wasm-bindgen-cli
-            zlib
-          ];
-          
-          shellHook = ''
-            export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${
-            pkgs.lib.makeLibraryPath [ pkgs.zlib ]
-          }"'';
-
-          RUST_BACKTRACE = 1;
+        treefmt = {
+          projectRootFile = "flake.nix";
+          programs = {
+            deadnix.enable = true;
+            nixpkgs-fmt.enable = true;
+            rustfmt.enable = true;
+            taplo.enable = true;
+          };
         };
-      }
-    );
+      };
+    };
 }

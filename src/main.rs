@@ -1,6 +1,8 @@
-#![deny(clippy::all, clippy::pedantic, clippy::cargo)]
+#![deny(clippy::all, clippy::pedantic)]
 #![feature(lint_reasons)]
 
+mod pages;
+
 fn main() {
-    println!("Hello World.");
+    println!("Hello, world!");
 }

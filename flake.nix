@@ -46,6 +46,10 @@
             fish
             bacon
             cargo-expand
+            (import ./config/perseus.nix {
+              inherit (pkgs) lib stdenv rustPlatform fetchCrate makeWrapper wasm-pack;
+              inherit (pkgs.darwin.apple_sdk.frameworks) CoreServices;
+            })
           ];
 
           languages = {

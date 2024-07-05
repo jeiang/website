@@ -1,4 +1,5 @@
+dist/
+target/
 .devenv
 .direnv
-target
 **.log

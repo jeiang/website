@@ -1,8 +1,15 @@
-#![deny(clippy::all, clippy::pedantic)]
-#![feature(lint_reasons)]
+mod components;
+mod error_views;
+mod templates;
 
-mod pages;
+use perseus::prelude::*;
+use sycamore::prelude::*;
 
-fn main() {
-    println!("Hello, world!");
+#[perseus::main(perseus_axum::dflt_server)]
+pub fn main<G: Html>() -> PerseusApp<G> {
+    PerseusApp::new()
+        .template(crate::templates::index::get_template())
+        .template(crate::templates::contact::get_template())
+        .error_views(crate::error_views::get_error_views())
+        .static_alias("/index.css", "dist/output.css")
 }

@@ -46,10 +46,12 @@
             fish
             bacon
             cargo-expand
-            (import ./config/perseus.nix {
+            (import ./perseus.nix {
               inherit (pkgs) lib stdenv rustPlatform fetchCrate makeWrapper wasm-pack;
               inherit (pkgs.darwin.apple_sdk.frameworks) CoreServices;
             })
+            wasm-bindgen-cli
+            binaryen
           ];
 
           languages = {
@@ -59,14 +61,14 @@
               targets = [
                 "x86_64-unknown-linux-gnu"
                 "aarch64-apple-darwin"
+                "wasm32-unknown-unknown"
               ];
             };
             nix.enable = true;
           };
-          process.implementation = "overmind";
-          processes.tailwind.exec = ''
-            ROOT=$(git rev-parse --show-toplevel)
-            tailwindcss --config "$ROOT/config/tailwind.config.js" -i "$ROOT/src/index.css" -o "$ROOT/src/static/index.css" --watch
+          scripts.tailwind-watch.exec = ''
+            ROOT="$(git rev-parse --show-toplevel)"
+            tailwindcss --config "$ROOT/src/tailwind.config.js" -i "$ROOT/src/index.css" -o "$ROOT/dist/output.css" --watch
           '';
 
           pre-commit.hooks = {

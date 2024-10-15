@@ -41,35 +41,13 @@
 
           # https://devenv.sh/reference/options/
           packages = with pkgs; [
-            sqlite
             tailwindcss
-            fish
-            bacon
-            cargo-expand
-            (import ./perseus.nix {
-              inherit (pkgs) lib stdenv rustPlatform fetchCrate makeWrapper wasm-pack;
-              inherit (pkgs.darwin.apple_sdk.frameworks) CoreServices;
-            })
-            wasm-bindgen-cli
-            binaryen
           ];
 
           languages = {
-            rust = {
-              enable = true;
-              channel = "nightly";
-              targets = [
-                "x86_64-unknown-linux-gnu"
-                "aarch64-apple-darwin"
-                "wasm32-unknown-unknown"
-              ];
-            };
             nix.enable = true;
+            kotlin.enable = true;
           };
-          scripts.tailwind-watch.exec = ''
-            ROOT="$(git rev-parse --show-toplevel)"
-            tailwindcss --config "$ROOT/src/tailwind.config.js" -i "$ROOT/src/index.css" -o "$ROOT/dist/output.css" --watch
-          '';
 
           pre-commit.hooks = {
             editorconfig-checker.enable = true;
@@ -94,7 +72,6 @@
           programs = {
             deadnix.enable = true;
             nixpkgs-fmt.enable = true;
-            rustfmt.enable = true;
             taplo.enable = true;
           };
         };

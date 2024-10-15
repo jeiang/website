@@ -1,27 +1,20 @@
 # Aidan's Website(s)
 
-My website, made using Rust. :)
+My website, made using Kotlin ([Ktor](https://ktor.io/) + [kotlinx.html](https://github.com/Kotlin/kotlinx.html)) and
+Tailwind. :)
 
 ## Building & Running
-
-### Perseus CLI
-
-To build the website, you need to have the Perseus CLI installed. You can install it by running:
-
-```sh
-cargo install perseus-cli
-```
 
 To build the website, run:
 
 ```sh
-perseus build
+gradle build
 ```
 
 To run the website, run:
 
 ```sh
-perseus serve
+gradle run
 ```
 
 ### Nix

@@ -7,18 +7,16 @@ import io.ktor.server.http.content.staticResources
 import io.ktor.server.routing.routing
 
 fun main(args: Array<String>) {
-    io.ktor.server.netty.EngineMain.main(args)
+  io.ktor.server.netty.EngineMain.main(args)
 }
 
 fun Application.module() {
-    routing {
-        staticResources("/assets", "assets") {
-            preCompressed(CompressedFileType.GZIP, CompressedFileType.BROTLI)
-            enableAutoHeadResponse()
-            cacheControl {
-                listOf(CacheControl.MaxAge(maxAgeSeconds = 3600))
-            }
-        }
+  routing {
+    staticResources("/assets", "assets") {
+      preCompressed(CompressedFileType.GZIP, CompressedFileType.BROTLI)
+      enableAutoHeadResponse()
+      cacheControl { listOf(CacheControl.MaxAge(maxAgeSeconds = 3600)) }
     }
-    routes()
+  }
+  routes()
 }

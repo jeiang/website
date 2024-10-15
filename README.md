@@ -9,17 +9,21 @@ To build the website, run:
 
 ```sh
 gradle build
+
+# OR
+
+nix build .
 ```
 
 To run the website, run:
 
 ```sh
 gradle run
+
+# OR
+
+nix run .
 ```
-
-### Nix
-
-To be implemented.
 
 ## Currently served at
 

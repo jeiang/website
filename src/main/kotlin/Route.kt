@@ -108,9 +108,9 @@ inline fun SectioningOrFlowContent.customSection(
 fun FlowContent.home() {
   customSection("Who I am") {
     p {
-      +"My name is Aidan Pinard. I am currently a university student. I'm interested in programming, *nix stuff, and F1. Check out my "
+      +"My name is Aidan Pinard. I am currently working at CIBC Caribbean. I'm interested in programming, *nix stuff, and F1. Check out my "
       inlineLink(href = "/about") { +"About page" }
-      +" page for more!"
+      +" for more!"
     }
   }
   customSection("Tech I use") { ul("list-disc list-inside") { interests.map { li { +it } } } }
@@ -152,7 +152,7 @@ fun FlowContent.about() {
       +"Outside of tech, I like watching F1 with my friends (favorite drivers are Alonso and Piastri), and "
       +"playing pool, Balatro, and Crusader Kings 3. I also play F1 2023 and Dirt Rally with a Moza wheel and"
       +" pedal set, though I'm not that good. I also read a lot of manga and light novels, but I haven't watched"
-      +"any anime in a good while."
+      +" any anime in a good while."
     }
   }
   customSection("About this site") {

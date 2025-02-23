@@ -13,5 +13,5 @@ RUN gradle build --no-daemon
 
 FROM eclipse-temurin:21-jre-alpine
 RUN mkdir /opt/app
-COPY --from=build /home/gradle/src/build/libs/ /opt/app/
+COPY --from=build /home/gradle/src/build/libs/website-all.jar /opt/app/website.jar
 ENTRYPOINT ["java","-jar","/opt/app/website.jar"]

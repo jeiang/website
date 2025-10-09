@@ -121,7 +121,7 @@ fun FlowContent.about() {
     p("pb-4") {
       +"I am from Trinidad and have a BSc. in Electrical and Computer Engineering at UWI St. Augustine. I currently work as a software developer at "
       inlineLink(href = "https://cibcfcib.com") { +"CIBC Caribbean" }
-      +" and while occasionally doing some personal projects on the side, like this website. Since I started getting into tech, some of the cool things I've learned/used are:"
+      +" and while occasionally doing some personal projects on the side, like this website. Since I started getting into tech, some of the things I've learned/used are:"
     }
     ul("list-disc list-inside py-4") {
       li {
@@ -163,7 +163,7 @@ fun FlowContent.about() {
       li { inlineLink(href = "https://github.com/Kotlin/kotlinx.html") { +"Kotlin HTML DSL" } }
       li { inlineLink(href = "https://tailwindcss.com/") { +"Tailwind CSS" } }
     }
-    p("pb-4") { +"And is hosted by Linode." }
+    p("pb-4") { +"And is hosted by Hetzner." }
   }
 }
 

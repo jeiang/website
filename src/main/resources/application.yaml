@@ -1,7 +1,0 @@
-ktor:
-  development: true
-  application:
-    modules:
-      - co.aidanpinard.website.ApplicationKt.module
-  deployment:
-    port: "$SERVER_PORT:8080"

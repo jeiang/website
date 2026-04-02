@@ -1,0 +1,59 @@
+---
+import Layout from "../layouts/Layout.astro";
+import CustomSection from "../components/CustomSection.astro";
+import InlineLink from "../components/InlineLink.astro";
+
+const interests = [
+  "Nix/NixOS & Linux",
+  "Rust, Go, Zig, Java, C & Kotlin",
+  "Microcontrollers (ESP and Arduino)",
+  "Shell Scripting (Bash, Fish, Powershell)",
+];
+
+const stuffIWorkedOn = [
+  {
+    content: "My NixOS dotfiles for my personal computer and the server.",
+    link: "https://github.com/jeiang/.dotfiles",
+  },
+  {
+    content: "A simple mod manager for Marvel Rivals.",
+    link: "https://github.com/jeiang/rivals-mod-manager",
+  },
+  { content: "This website.", link: "https://github.com/jeiang/website" },
+  {
+    content: "A very incomplete 6502 emulator.",
+    link: "https://github.com/jeiang/6502-emulator",
+  },
+  {
+    content:
+      "A tool for finding wallpapers of a given aspect ratio (can search 300+ GB of photos in a few seconds).",
+    link: "https://github.com/jeiang/wallpaper-finder",
+  },
+];
+---
+
+<Layout title="Home" description="Aidan Pinard">
+  <CustomSection title="Who I am">
+    <p>
+      My name is Aidan Pinard. I am currently working as a DevOps Engineer for
+      CIBC Caribbean. I'm interested in programming, *nix stuff, and F1. Check
+      out my <InlineLink href="/about">about page</InlineLink> to know more.
+    </p>
+  </CustomSection>
+  <CustomSection title="Tech I use">
+    <ul class="list-disc pl-6 list-outside">
+      {interests.map((item) => <li>{item}</li>)}
+    </ul>
+  </CustomSection>
+  <CustomSection title="Stuff I've worked on">
+    <ul class="list-disc pl-6 list-outside">
+      {
+        stuffIWorkedOn.map((item) => (
+          <li>
+            {item.content} (<InlineLink href={item.link}>link</InlineLink>)
+          </li>
+        ))
+      }
+    </ul>
+  </CustomSection>
+</Layout>

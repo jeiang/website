@@ -1,0 +1,10 @@
+@import "tailwindcss";
+
+@theme {
+  --color-light: #d3dad9;
+  --color-dark: #37353e;
+  --color-link: #3e7cb1;
+  --color-visited-link: #b27c66;
+}
+
+@custom-variant dark (&:where(.dark, .dark *));

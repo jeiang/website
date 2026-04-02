@@ -1,0 +1,38 @@
+---
+import Layout from "../layouts/Layout.astro";
+import CustomSection from "../components/CustomSection.astro";
+import InlineLink from "../components/InlineLink.astro";
+
+const links = [
+  { content: "AniList", link: "https://anilist.co/user/jeiang" },
+  {
+    content: "Discord",
+    link: "https://discordapp.com/users/343517984222085134",
+  },
+  { content: "Email", link: "mailto:aidan@aidanpinard.co" },
+  { content: "Github", link: "https://github.com/jeiang" },
+  { content: "Roll20", link: "https://app.roll20.net/users/6153276/jeiang" },
+  { content: "Twitter", link: "https://twitter.com/jeiang_" },
+  { content: "YouTube", link: "https://www.youtube.com/@jeiang" },
+  { content: "Instagram", link: "https://www.instagram.com/aidanpinard" },
+  {
+    content: "LinkedIn",
+    link: "https://www.linkedin.com/in/aidan-pinard-705872231/",
+  },
+].toSorted((a, b) => a.content.localeCompare(b.content));
+---
+
+<Layout title="Contact" description="Contact me!">
+  <CustomSection title="Contact Me">
+    <p class="py-2">You can contact me (or see what I'm up to) via:</p>
+    <ul class="list-disc list-inside">
+      {
+        links.map((item) => (
+          <li>
+            <InlineLink href={item.link}>{item.content}</InlineLink>
+          </li>
+        ))
+      }
+    </ul>
+  </CustomSection>
+</Layout>

@@ -1,0 +1,14 @@
+---
+const { classes, href, target } = Astro.props;
+---
+
+<a
+  class:list={[
+    classes,
+    "underline py-2 px-3 border-2 rounded border-dark dark:border-light",
+  ]}
+  target={target}
+  href={href}
+>
+  <slot />
+</a>

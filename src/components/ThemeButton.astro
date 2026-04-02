@@ -1,0 +1,54 @@
+---
+import { Icon } from "astro-icon/components";
+---
+
+<theme-button>
+  <template data-icon="system"><Icon size={24} name="computer" /></template>
+  <template data-icon="dark"><Icon size={24} name="moon" /></template>
+  <template data-icon="light"><Icon size={24} name="sun" /></template>
+  <button
+    id="theme-selector"
+    class="py-2 h-full px-4 border-2 rounded border-dark dark:border-light"
+    aria-hidden="true"></button>
+</theme-button>
+
+<script>
+  class ThemeButton extends HTMLElement {
+    setButtonIcon(button: HTMLElement) {
+      const theme =
+        localStorage.theme === "light"
+          ? "light"
+          : localStorage.theme === "dark"
+            ? "dark"
+            : "system";
+      const template = this.querySelector(`template[data-icon="${theme}"]`);
+      button.innerHTML = template?.innerHTML ?? "";
+    }
+
+    connectedCallback() {
+      const button = this.querySelector("button");
+      button?.addEventListener("click", () => {
+        if (localStorage.theme === "light") {
+          localStorage.theme = "dark";
+        } else if (localStorage.theme === "dark") {
+          localStorage.removeItem("theme");
+        } else {
+          localStorage.theme = "light";
+        }
+        document.documentElement.classList.toggle(
+          "dark",
+          localStorage.theme === "dark" ||
+            (!("theme" in localStorage) &&
+              window.matchMedia("(prefers-color-scheme: dark)").matches),
+        );
+        this.setButtonIcon(button);
+      });
+
+      if (button) {
+        this.setButtonIcon(button);
+      }
+    }
+  }
+
+  customElements.define("theme-button", ThemeButton);
+</script>

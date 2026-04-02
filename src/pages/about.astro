@@ -1,0 +1,70 @@
+---
+import Layout from "../layouts/Layout.astro";
+import CustomSection from "../components/CustomSection.astro";
+import InlineLink from "../components/InlineLink.astro";
+
+const interests = [
+  {
+    name: "Nix/NixOS",
+    link: "https://nixos.org",
+    content:
+      "Very cool package management system/distro. Isolated builds with explicit dependency specification without virtualization, combined with system configuration/deployment makes it a breeze to manage my server. When I wiped my personal computer (to resize some partitions), I was back up and running with my prior setup in minutes. I could also deploy services to my server with just a few lines of code (see my dotfiles for how I do this).",
+  },
+  {
+    name: "Rust",
+    link: "https://rust-lang.org",
+    content:
+      "Rust is pretty well known by know, but I like to mention it because its what really got me into properly modelling the domain of what I was working on when writing software. I don't write as much as I would like to right now, but I do use it a lot when doing embedded code (e.g. on my ESP32).",
+  },
+  {
+    name: "Zig",
+    link: "https://ziglang.org",
+    content:
+      "One of my favorite languages to write in, because its simple yet flexible. It does have a breaking changes every once in a while (since it hasn't hit 1.0 yet), and the LSP is not that great, but comptime basically gives you coding superpowers.",
+  },
+  {
+    name: "Go",
+    link: "https://go.dev",
+    content:
+      "Very easy to use, and get running basically anywhere. Whenever I need to write a short one off script that needs more than what a shell script can easily do, I usually turn to Go.",
+  },
+];
+---
+
+<Layout title="About" description="About Aidan Pinard">
+  <CustomSection title="About Me">
+    <p>
+      I am from Trinidad and have a BSc. in Electrical and Computer Engineering
+      at UWI St. Augustine. I currently work as a DevOps Engineer at <InlineLink
+        href="https://cibcfcib.com">CIBC Caribbean</InlineLink
+      > and I occasionally do some personal projects on the side. Since getting into
+      tech, some of the things I've been interested in are:
+    </p>
+    <ul class="list-disc pl-6 pb-4 list-outside">
+      {
+        interests.map((item) => (
+          <li>
+            <InlineLink href={item.link}>{item.name}</InlineLink>:{" "}
+            {item.content}
+          </li>
+        ))
+      }
+    </ul>
+    <p>
+      Outside of tech, I like watching F1 (my favorite drivers are Alonso and
+      Piastri), and playing Marvel Rivals, Balatro, Crusader Kings 3. I also
+      read a lot of manga and light novels, though I haven't watched any anime
+      in a while.
+    </p>
+  </CustomSection>
+  <CustomSection title="About this site">
+    <p>This website was made with:</p>
+    <ul class="list-disc pl-6 pb-4 list-outside">
+      <li><InlineLink href="https://astro.build/">Astro</InlineLink></li>
+      <li>
+        <InlineLink href="https://tailwindcss.com/">Tailwind CSS</InlineLink>
+      </li>
+    </ul>
+    <p>And is hosted by Caddy on Hetzner.</p>
+  </CustomSection>
+</Layout>

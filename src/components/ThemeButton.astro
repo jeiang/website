@@ -3,13 +3,14 @@ import { Icon } from "astro-icon/components";
 ---
 
 <theme-button>
-  <template data-icon="system"><Icon size={24} name="computer" /></template>
-  <template data-icon="dark"><Icon size={24} name="moon" /></template>
-  <template data-icon="light"><Icon size={24} name="sun" /></template>
   <button
     id="theme-selector"
     class="py-2 h-full px-4 border-2 rounded border-dark dark:border-light"
-    aria-hidden="true"></button>
+    role="presentation">
+      <Icon data-icon="system" size={24} class="hidden" name="computer" />
+      <Icon data-icon="dark" size={24} class="hidden" name="moon" />
+      <Icon data-icon="light" size={24} class="hidden" name="sun" />
+    </button>
 </theme-button>
 
 <script>
@@ -21,8 +22,10 @@ import { Icon } from "astro-icon/components";
           : localStorage.theme === "dark"
             ? "dark"
             : "system";
-      const template = this.querySelector(`template[data-icon="${theme}"]`);
-      button.innerHTML = template?.innerHTML ?? "";
+      const currentThemeIcon = this.querySelector(`svg[data-icon="${theme}"]`);
+      const otherIcons = this.querySelectorAll(`button > :not(svg[data-icon="${theme}"])`)
+      otherIcons.forEach(node => node.classList.add("hidden"));
+      currentThemeIcon?.classList.remove("hidden");
     }
 
     connectedCallback() {

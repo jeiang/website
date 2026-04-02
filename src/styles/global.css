@@ -5,6 +5,8 @@
   --color-dark: #37353e;
   --color-link: #3e7cb1;
   --color-visited-link: #b27c66;
+  --font-header: "Alegreya", serif;
+  --font-display: "Ubuntu Sans", sans-serif;
 }
 
 @custom-variant dark (&:where(.dark, .dark *));

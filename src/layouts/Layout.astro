@@ -54,10 +54,7 @@ const { title, description } = Astro.props;
   </head>
   <body class="flex flex-col leading-relaxed min-h-dvh items-center text-lg font-display bg-light dark:bg-dark dark:text-light">
     <Header />
-    <main
-      class="page-chrome flex-grow px-6 py-4"
-      transition:name="main-content"
-    >
+    <main class="page-chrome flex-grow px-6 py-4">
       <slot />
     </main>
     <Footer />

@@ -10,10 +10,10 @@ import { Icon } from "astro-icon/components";
     <span data-theme-icon="system">
       <Icon name="computer" size={24} />
     </span>
-    <span data-theme-icon="light" class="hidden">
+    <span data-theme-icon="light">
       <Icon name="sun" size={24} />
     </span>
-    <span data-theme-icon="dark" class="hidden">
+    <span data-theme-icon="dark">
       <Icon name="moon" size={24} />
     </span>
   </button>
@@ -22,11 +22,7 @@ import { Icon } from "astro-icon/components";
 <script>
   declare global {
     interface Window {
-      __theme: {
-        mode(): "system" | "light" | "dark";
-        apply(): void;
-        cycle(): void;
-      };
+      __theme: { cycle(): void };
     }
   }
 
@@ -35,22 +31,7 @@ import { Icon } from "astro-icon/components";
       const button = this.querySelector("button");
       if (!button || button.dataset.bound) return;
       button.dataset.bound = "true";
-
-      const syncIcon = () => {
-        for (const icon of this.querySelectorAll<HTMLElement>(
-          "[data-theme-icon]",
-        ))
-          icon.classList.toggle(
-            "hidden",
-            icon.dataset.themeIcon !== window.__theme.mode(),
-          );
-      };
-      button.addEventListener("click", () => {
-        window.__theme.cycle();
-        window.__theme.apply();
-        syncIcon();
-      });
-      syncIcon();
+      button.addEventListener("click", () => window.__theme.cycle());
     }
   }
 

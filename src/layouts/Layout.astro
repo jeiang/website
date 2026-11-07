@@ -9,7 +9,7 @@ import { SITE_NAME } from "../consts";
 const { title, description } = Astro.props;
 ---
 
-<html lang="en">
+<html lang="en" data-theme-mode="system">
   <head>
     <meta charset="utf-8" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
@@ -29,6 +29,7 @@ const { title, description } = Astro.props;
           : "system";
       const applyTheme = () => {
         const mode = themeMode();
+        document.documentElement.dataset.themeMode = mode;
         document.documentElement.classList.toggle(
           "dark",
           mode === "dark" ||
@@ -37,16 +38,18 @@ const { title, description } = Astro.props;
         );
       };
       window.__theme = {
-        mode: themeMode,
-        apply: applyTheme,
         cycle: () => {
           const next = MODES[(MODES.indexOf(themeMode()) + 1) % MODES.length];
           if (next === "system") localStorage.removeItem("theme");
           else localStorage.theme = next;
+          applyTheme();
         },
       };
       applyTheme();
       document.addEventListener("astro:after-swap", applyTheme);
+      window
+        .matchMedia("(prefers-color-scheme: dark)")
+        .addEventListener("change", applyTheme);
     </script>
   </head>
   <body class="flex flex-col leading-relaxed min-h-dvh items-center text-lg font-display bg-light dark:bg-dark dark:text-light">

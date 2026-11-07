@@ -16,3 +16,12 @@
 @utility page-chrome {
   @apply w-full max-w-xl bg-light dark:bg-dark;
 }
+
+[data-theme-icon] {
+  display: none;
+}
+[data-theme-mode="system"] [data-theme-icon="system"],
+[data-theme-mode="light"] [data-theme-icon="light"],
+[data-theme-mode="dark"] [data-theme-icon="dark"] {
+  display: inline;
+}

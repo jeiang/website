@@ -9,7 +9,7 @@
       system: let
         pkgs = import (inputs.nixpkgs) {inherit system;};
       in {
-        devShell = pkgs.mkShell {
+        devShells.default = pkgs.mkShell {
           buildInputs = with pkgs; [
             bun
             astro-language-server
@@ -25,10 +25,17 @@
 
           node_modules = pkgs.stdenv.mkDerivation {
             pname = "${pname}_node-modules";
-            inherit src version;
+            inherit version;
+
+            # Only the inputs bun install reads, so site edits do not
+            # invalidate the node_modules build.
+            src = pkgs.lib.cleanSourceWith {
+              src = ./.;
+              filter = path: _type:
+                builtins.elem (baseNameOf path) ["package.json" "bun.lock"];
+            };
 
             nativeBuildInputs = with pkgs; [bun];
-            buildInputs = with pkgs; [nodejs-slim_latest];
 
             dontConfigure = true;
             dontFixup = true; # patchShebangs produces illegal path references in FODs
@@ -48,8 +55,8 @@
             '';
 
             outputHash = {
-              x86_64-linux = "sha256-BS1TIF5Csphwp22zFRUR1ZV+sIwztmTZFyz70le0iWQ=";
-              aarch64-darwin = "sha256-gHanRjdKQMnBCFUVeTwH4YRJijDGiz5uUb5WwlDSKAM=";
+              x86_64-linux = "sha256-KViHtrD62rbR8ibEY66K0ETUrG16U0tvJTeQHyTsDyQ=";
+              aarch64-darwin = "sha256-155XRRaKxMfZQgQdTcR21vak7ZH+pRHAJ4E5X1tKk3Y=";
             }
             .${system} or (throw "no node_modules FOD hash for ${system}");
             outputHashAlgo = "sha256";
@@ -64,7 +71,6 @@
               nodejs-slim_latest
               bun
             ];
-
             configurePhase = ''
               runHook preConfigure
               cp -a ${node_modules}/node_modules ./node_modules

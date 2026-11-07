@@ -1,12 +1,18 @@
 @import "tailwindcss";
+@import "@fontsource-variable/alegreya/wght.css";
+@import "@fontsource-variable/ubuntu-sans/wght.css";
 
 @theme {
   --color-light: #d3dad9;
   --color-dark: #37353e;
   --color-link: #3e7cb1;
   --color-visited-link: #b27c66;
-  --font-header: "Alegreya", serif;
-  --font-display: "Ubuntu Sans", sans-serif;
+  --font-header: "Alegreya Variable", serif;
+  --font-display: "Ubuntu Sans Variable", sans-serif;
 }
 
 @custom-variant dark (&:where(.dark, .dark *));
+
+@utility page-chrome {
+  @apply w-full max-w-xl bg-light dark:bg-dark;
+}

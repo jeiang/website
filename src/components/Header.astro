@@ -1,18 +1,25 @@
 ---
-import LinkButton from "./LinkButton.astro";
+import InlineLink from "./InlineLink.astro";
 import ThemeButton from "./ThemeButton.astro";
+import { SITE_NAME } from "../consts";
 ---
 
 <header
-  class="sticky top-0 z-50 px-6 py-4 border-b-2 w-full max-w-xl bg-light dark:bg-dark border-dark dark:border-light"
+  class="page-chrome sticky top-0 z-50 border-b-2 border-dark dark:border-light px-6 py-4"
   transition:persist
 >
-  <h1 class="text-4xl pb-3 font-header font-bold">Aidan Pinard</h1>
+  <h1 class="text-4xl pb-3 font-header font-bold">{SITE_NAME}</h1>
   <div class="flex flex-row">
     <nav class="flex flex-grow flex-row space-x-3">
-      <LinkButton href="/">Home</LinkButton>
-      <LinkButton href="/about">About</LinkButton>
-      <LinkButton href="/contact">Contact</LinkButton>
+      <InlineLink button href="/">
+        Home
+      </InlineLink>
+      <InlineLink button href="/about">
+        About
+      </InlineLink>
+      <InlineLink button href="/contact">
+        Contact
+      </InlineLink>
     </nav>
     <ThemeButton />
   </div>

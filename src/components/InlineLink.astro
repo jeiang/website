@@ -1,13 +1,11 @@
 ---
-const { href, button = false, classes } = Astro.props;
+const { href, classes } = Astro.props;
 ---
 
 <a
   class:list={[
     classes,
-    button
-      ? "py-1.5 px-3 border-2 rounded-lg border-dark dark:border-light transition-colors hover:bg-dark hover:text-light dark:hover:bg-light dark:hover:text-dark"
-      : "underline hover:text-link visited:text-visited-link",
+    "underline hover:text-accent dark:hover:text-accent-dark visited:text-visited-link dark:visited:text-visited-link-dark",
   ]}
   href={href}
 >

@@ -4,6 +4,12 @@ import CustomSection from "../components/CustomSection.astro";
 import InlineLink from "../components/InlineLink.astro";
 import { SITE_NAME } from "../consts";
 
+const slug = (item: string) =>
+  item
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
 const interests = [
   "Nix/NixOS & Linux",
   "Kubernetes",
@@ -57,32 +63,40 @@ const stuffIWorkedOn = [
 ---
 
 <Layout title="Home" description={SITE_NAME}>
-  <CustomSection title="Who I am">
+  <CustomSection title="whoami">
     <p>
       My name is Aidan Pinard. I am currently working as a DevOps Engineer for
       CIBC Caribbean. I'm interested in programming, *nix stuff, and F1. Check
-      out my <InlineLink href="/about">about page</InlineLink> to know more.
+      out <InlineLink href="/about">/about</InlineLink> to know more.
     </p>
   </CustomSection>
-  <CustomSection title="Tech I use">
-    <ul class="flex flex-wrap gap-2">
-      {interests.map((item) => (
-        <li class="border-2 rounded-full px-3 py-1 text-base border-dark dark:border-light">
-          {item}
-        </li>
-      ))}
-    </ul>
+  <CustomSection title="ls ~/tech">
+    <p class="text-muted dark:text-muted-dark">
+      {interests.map((item) => `[${slug(item)}]`).join(" ")}
+    </p>
   </CustomSection>
-  <CustomSection title="Stuff I've worked on">
-    <ul class="flex flex-col gap-3">
-      {stuffIWorkedOn.map((item) => (
-        <li class="border-2 rounded-lg p-4 border-dark dark:border-light">
-          <InlineLink href={item.link} classes="font-bold">
-            {item.name}
+  <CustomSection title="ls ~/projects">
+    <ul>
+      {stuffIWorkedOn.map((item, i) => (
+        <li
+          class:list={[
+            "pb-3",
+            i > 0 &&
+              "pt-3 border-t border-dashed border-hairline dark:border-hairline-dark",
+          ]}
+        >
+          <InlineLink
+            href={item.link}
+            classes="font-bold text-accent dark:text-accent-dark"
+          >
+            → {item.name}
           </InlineLink>
-          <p class="text-base pt-1">{item.content}</p>
+          <p class="text-sm text-muted dark:text-muted-dark">{item.content}</p>
         </li>
       ))}
     </ul>
+    <p class="pt-4 text-muted dark:text-muted-dark">
+      $ <span class="cursor" aria-hidden="true" />
+    </p>
   </CustomSection>
 </Layout>

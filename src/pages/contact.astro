@@ -23,13 +23,13 @@ const links = [
 ---
 
 <Layout title="Contact" description="Contact me!">
-  <CustomSection title="Contact Me">
-    <p class="pb-4">You can contact me (or see what I'm up to) via:</p>
-    <ul class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+  <CustomSection title="ping">
+    <p class="pb-2">You can contact me (or see what I'm up to) via:</p>
+    <ul class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1">
       {links.map((item) => (
         <li>
-          <InlineLink button classes="block text-center" href={item.link}>
-            {item.content}
+          <InlineLink href={item.link}>
+            [{item.content.toLowerCase()}]
           </InlineLink>
         </li>
       ))}

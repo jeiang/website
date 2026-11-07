@@ -1,14 +1,20 @@
 @import "tailwindcss";
-@import "@fontsource-variable/alegreya/wght.css";
-@import "@fontsource-variable/ubuntu-sans/wght.css";
+@import "@fontsource-variable/jetbrains-mono/wght.css";
 
 @theme {
-  --color-light: #d3dad9;
-  --color-dark: #37353e;
-  --color-link: #3e7cb1;
-  --color-visited-link: #b27c66;
-  --font-header: "Alegreya Variable", serif;
-  --font-display: "Ubuntu Sans Variable", sans-serif;
+  --color-light: #f4f3ee;
+  --color-dark: #0f1312;
+  --color-ink: #20241f;
+  --color-ink-dark: #d8e2d8;
+  --color-muted: #6a6f68;
+  --color-muted-dark: #7d8a7f;
+  --color-accent: #2e7d4f;
+  --color-accent-dark: #74d697;
+  --color-hairline: #cfd2c8;
+  --color-hairline-dark: #263029;
+  --color-visited-link: #1f5a3a;
+  --color-visited-link-dark: #4a9a6e;
+  --font-mono: "JetBrains Mono Variable", monospace;
 }
 
 @custom-variant dark (&:where(.dark, .dark *));
@@ -24,4 +30,21 @@
 [data-theme-mode="light"] [data-theme-icon="light"],
 [data-theme-mode="dark"] [data-theme-icon="dark"] {
   display: inline;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+.cursor {
+  display: inline-block;
+  width: 0.55em;
+  height: 1.1em;
+  vertical-align: text-bottom;
+  background-color: var(--color-accent);
+  animation: blink 1.2s step-end infinite;
+}
+.dark .cursor {
+  background-color: var(--color-accent-dark);
 }

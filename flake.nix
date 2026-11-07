@@ -47,7 +47,11 @@
               runHook postInstall
             '';
 
-            outputHash = "sha256-BS1TIF5Csphwp22zFRUR1ZV+sIwztmTZFyz70le0iWQ=";
+            outputHash = {
+              x86_64-linux = "sha256-BS1TIF5Csphwp22zFRUR1ZV+sIwztmTZFyz70le0iWQ=";
+              aarch64-darwin = "sha256-gHanRjdKQMnBCFUVeTwH4YRJijDGiz5uUb5WwlDSKAM=";
+            }
+            .${system} or (throw "no node_modules FOD hash for ${system}");
             outputHashAlgo = "sha256";
             outputHashMode = "recursive";
           };

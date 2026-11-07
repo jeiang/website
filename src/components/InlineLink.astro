@@ -1,9 +1,13 @@
 ---
-const { classes, href, target } = Astro.props;
+const { href, classes } = Astro.props;
 ---
 
 <a
-  class:list={[classes, "underline hover:text-link visited:text-visited-link"]}
-  target={target}
-  href={href}><slot /></a
+  class:list={[
+    classes,
+    "underline hover:text-accent dark:hover:text-accent-dark visited:text-visited-link dark:visited:text-visited-link-dark",
+  ]}
+  href={href}
 >
+  <slot />
+</a>

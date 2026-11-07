@@ -1,13 +1,15 @@
 ---
 import "../styles/global.css";
 
+import { ClientRouter } from "astro:transitions";
 import Footer from "../components/Footer.astro";
 import Header from "../components/Header.astro";
+import { SITE_NAME } from "../consts";
 
 const { title, description } = Astro.props;
 ---
 
-<html lang="en">
+<html lang="en" data-theme-mode="system">
   <head>
     <meta charset="utf-8" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
@@ -16,31 +18,45 @@ const { title, description } = Astro.props;
     <link rel="manifest" href="/site.webmanifest" />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
-    <title>Aidan Pinard - {title}</title>
+    <title>{SITE_NAME} - {title}</title>
     <meta name="description" content={description} />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400..900;1,400..900&family=Ubuntu+Sans:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+    <ClientRouter />
     <script is:inline>
-      function setTheme() {
+      const MODES = ["system", "light", "dark"];
+      const themeMode = () =>
+        localStorage.theme === "light" || localStorage.theme === "dark"
+          ? localStorage.theme
+          : "system";
+      const applyTheme = () => {
+        const mode = themeMode();
+        document.documentElement.dataset.themeMode = mode;
         document.documentElement.classList.toggle(
           "dark",
-          localStorage.theme === "dark" ||
-            (!("theme" in localStorage) &&
+          mode === "dark" ||
+            (mode === "system" &&
               window.matchMedia("(prefers-color-scheme: dark)").matches),
         );
-      }
-      setTheme();
-      // document.addEventListener("astro:after-swap", setTheme);
+      };
+      window.__theme = {
+        cycle: () => {
+          const next = MODES[(MODES.indexOf(themeMode()) + 1) % MODES.length];
+          if (next === "system") localStorage.removeItem("theme");
+          else localStorage.theme = next;
+          applyTheme();
+        },
+      };
+      applyTheme();
+      document.addEventListener("astro:after-swap", applyTheme);
+      window
+        .matchMedia("(prefers-color-scheme: dark)")
+        .addEventListener("change", applyTheme);
     </script>
   </head>
-  <body
-    class="flex flex-col leading-relaxed min-h-dvh items-center text-lg font-display bg-light dark:bg-dark dark:text-light"
-  >
-    <Header transition:persist />
-    <main class="flex-grow w-full max-w-xl py-4 px-6" transition:name="main-content">
+  <body class="flex flex-col leading-relaxed min-h-dvh items-center text-base font-mono bg-light dark:bg-dark text-ink dark:text-ink-dark">
+    <Header />
+    <main class="page-chrome flex-grow px-6 py-4">
       <slot />
     </main>
-    <Footer transition:persist />
+    <Footer />
   </body>
 </html>

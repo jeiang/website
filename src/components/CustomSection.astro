@@ -2,7 +2,7 @@
 const { title } = Astro.props;
 ---
 
-<section class="pb-4">
-  <h1 class="text-2xl font-header font-bold pb-2">{title}</h1>
+<section class="pb-6 font-mono">
+  <h2 class="font-bold pb-2 text-accent dark:text-accent-dark">$ {title}</h2>
   <slot />
 </section>

@@ -1,57 +1,33 @@
 ---
-import { Icon } from "astro-icon/components";
 ---
 
 <theme-button>
   <button
-    id="theme-selector"
-    class="py-2 h-full px-4 border-2 rounded border-dark dark:border-light"
-    role="presentation">
-      <Icon data-icon="system" size={24} class="hidden" name="computer" />
-      <Icon data-icon="dark" size={24} class="hidden" name="moon" />
-      <Icon data-icon="light" size={24} class="hidden" name="sun" />
-    </button>
+    aria-label="Toggle color theme"
+    class="font-mono text-sm hover:text-accent dark:hover:text-accent-dark"
+  >
+    <span data-theme-icon="system">[~]</span>
+    <span data-theme-icon="light">[+]</span>
+    <span data-theme-icon="dark">[-]</span>
+  </button>
 </theme-button>
 
 <script>
-  class ThemeButton extends HTMLElement {
-    setButtonIcon(button: HTMLElement) {
-      const theme =
-        localStorage.theme === "light"
-          ? "light"
-          : localStorage.theme === "dark"
-            ? "dark"
-            : "system";
-      const currentThemeIcon = this.querySelector(`svg[data-icon="${theme}"]`);
-      const otherIcons = this.querySelectorAll(`button > :not(svg[data-icon="${theme}"])`)
-      otherIcons.forEach(node => node.classList.add("hidden"));
-      currentThemeIcon?.classList.remove("hidden");
-    }
-
-    connectedCallback() {
-      const button = this.querySelector("button");
-      button?.addEventListener("click", () => {
-        if (localStorage.theme === "light") {
-          localStorage.theme = "dark";
-        } else if (localStorage.theme === "dark") {
-          localStorage.removeItem("theme");
-        } else {
-          localStorage.theme = "light";
-        }
-        document.documentElement.classList.toggle(
-          "dark",
-          localStorage.theme === "dark" ||
-            (!("theme" in localStorage) &&
-              window.matchMedia("(prefers-color-scheme: dark)").matches),
-        );
-        this.setButtonIcon(button);
-      });
-
-      if (button) {
-        this.setButtonIcon(button);
-      }
+  declare global {
+    interface Window {
+      __theme: { cycle(): void };
     }
   }
 
-  customElements.define("theme-button", ThemeButton);
+  class ThemeButton extends HTMLElement {
+    connectedCallback() {
+      const button = this.querySelector("button");
+      if (!button || button.dataset.bound) return;
+      button.dataset.bound = "true";
+      button.addEventListener("click", () => window.__theme.cycle());
+    }
+  }
+
+  if (!customElements.get("theme-button"))
+    customElements.define("theme-button", ThemeButton);
 </script>

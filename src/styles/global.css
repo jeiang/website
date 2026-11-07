@@ -1,12 +1,50 @@
 @import "tailwindcss";
+@import "@fontsource-variable/jetbrains-mono/wght.css";
 
 @theme {
-  --color-light: #d3dad9;
-  --color-dark: #37353e;
-  --color-link: #3e7cb1;
-  --color-visited-link: #b27c66;
-  --font-header: "Alegreya", serif;
-  --font-display: "Ubuntu Sans", sans-serif;
+  --color-light: #faf9f5;
+  --color-dark: #0c1210;
+  --color-ink: #24292e;
+  --color-ink-dark: #c8ddcd;
+  --color-muted: #57606a;
+  --color-muted-dark: #8fa896;
+  --color-accent: #1a7f37;
+  --color-accent-dark: #56d364;
+  --color-hairline: #d8dade;
+  --color-hairline-dark: #2a3a2f;
+  --color-visited-link: #116329;
+  --color-visited-link-dark: #3fb950;
+  --font-mono: "JetBrains Mono Variable", monospace;
 }
 
 @custom-variant dark (&:where(.dark, .dark *));
+
+@utility page-chrome {
+  @apply w-full max-w-xl bg-light dark:bg-dark;
+}
+
+[data-theme-icon] {
+  display: none;
+}
+[data-theme-mode="system"] [data-theme-icon="system"],
+[data-theme-mode="light"] [data-theme-icon="light"],
+[data-theme-mode="dark"] [data-theme-icon="dark"] {
+  display: inline;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+.cursor {
+  display: inline-block;
+  width: 0.55em;
+  height: 1.1em;
+  vertical-align: text-bottom;
+  background-color: var(--color-accent);
+  animation: blink 1.2s step-end infinite;
+}
+.dark .cursor {
+  background-color: var(--color-accent-dark);
+}

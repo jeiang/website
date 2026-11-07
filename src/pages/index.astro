@@ -2,58 +2,111 @@
 import Layout from "../layouts/Layout.astro";
 import CustomSection from "../components/CustomSection.astro";
 import InlineLink from "../components/InlineLink.astro";
+import { SITE_NAME } from "../consts";
 
 const interests = [
-  "Nix/NixOS & Linux",
-  "Rust, Go, Zig, Java, C & Kotlin",
-  "Microcontrollers (ESP and Arduino)",
-  "Shell Scripting (Bash, Fish, Powershell)",
+  { name: "nix/nixos", link: "https://nixos.org" },
+  { name: "kubernetes", link: "https://kubernetes.io" },
+  {
+    name: "azure-devops",
+    link: "https://azure.microsoft.com/en-us/products/devops",
+  },
+  { name: "rust", link: "https://www.rust-lang.org" },
+  { name: "go", link: "https://go.dev" },
+  { name: "zig", link: "https://ziglang.org" },
+  { name: "java", link: "https://dev.java" },
+  {
+    name: "c",
+    link: "https://en.wikipedia.org/wiki/C_(programming_language)",
+  },
+  { name: "esp32", link: "https://www.espressif.com/en/products/socs/esp32" },
+  { name: "arduino", link: "https://www.arduino.cc" },
+  { name: "bash", link: "https://www.gnu.org/software/bash/" },
+  { name: "fish", link: "https://fishshell.com" },
+  {
+    name: "powershell",
+    link: "https://learn.microsoft.com/en-us/powershell/",
+  },
 ];
 
 const stuffIWorkedOn = [
   {
-    content: "My NixOS dotfiles for my personal computer and the server.",
-    link: "https://github.com/jeiang/.dotfiles",
-  },
-  {
-    content: "A simple mod manager for Marvel Rivals.",
-    link: "https://github.com/jeiang/rivals-mod-manager",
-  },
-  { content: "This website.", link: "https://github.com/jeiang/website" },
-  {
-    content: "A very incomplete 6502 emulator.",
-    link: "https://github.com/jeiang/6502-emulator",
-  },
-  {
+    name: "garret",
+    link: "https://github.com/jeiang/garret",
     content:
-      "A tool for finding wallpapers of a given aspect ratio (can search 300+ GB of photos in a few seconds).",
+      "A single-tenant Nix binary cache: an OIDC-protected pusher and a public puller, colocated on one host over SQLite and S3.",
+  },
+  {
+    name: "rip",
+    link: "https://github.com/jeiang/ripper",
+    content:
+      "A rip-style trash CLI for Linux that handles bind mounts and btrfs subvolumes correctly, for NixOS impermanence setups.",
+  },
+  {
+    name: "erdtree (fork)",
+    link: "https://github.com/jeiang/erdtree",
+    content:
+      "erdtree is a multi-threaded filesystem and disk-usage utility that respects gitignore rules; my fork fixes bugs and adds features from upstream issues.",
+  },
+  {
+    name: "dotfiles",
+    link: "https://github.com/jeiang/.dotfiles",
+    content:
+      "My Nix flake for all my machines: a NixOS gaming box, a nix-darwin MacBook, and five cloud servers.",
+  },
+  {
+    name: "wallpaper-finder",
     link: "https://github.com/jeiang/wallpaper-finder",
+    content:
+      "A Zig tool that finds wallpaper-sized images by reading only PNG and JPG header bytes, so it scans hundreds of GB of photos fast.",
+  },
+  {
+    name: "This website",
+    link: "https://github.com/jeiang/website",
+    content: "The site you're looking at, built with Astro and Tailwind.",
   },
 ];
 ---
 
-<Layout title="Home" description="Aidan Pinard">
-  <CustomSection title="Who I am">
+<Layout title="Home" description={SITE_NAME}>
+  <CustomSection title="whoami">
     <p>
       My name is Aidan Pinard. I am currently working as a DevOps Engineer for
       CIBC Caribbean. I'm interested in programming, *nix stuff, and F1. Check
-      out my <InlineLink href="/about">about page</InlineLink> to know more.
+      out <InlineLink href="/about">/about</InlineLink> to know more.
     </p>
   </CustomSection>
-  <CustomSection title="Tech I use">
-    <ul class="list-disc pl-6 list-outside">
-      {interests.map((item) => <li>{item}</li>)}
+  <CustomSection title="ls ~/tech">
+    <ul class="flex flex-wrap gap-x-4 gap-y-1">
+      {interests.map((item) => (
+        <li>
+          <InlineLink href={item.link}>[{item.name}]</InlineLink>
+        </li>
+      ))}
     </ul>
   </CustomSection>
-  <CustomSection title="Stuff I've worked on">
-    <ul class="list-disc pl-6 list-outside">
-      {
-        stuffIWorkedOn.map((item) => (
-          <li>
-            {item.content} (<InlineLink href={item.link}>link</InlineLink>)
-          </li>
-        ))
-      }
+  <CustomSection title="ls ~/projects">
+    <ul>
+      {stuffIWorkedOn.map((item, i) => (
+        <li
+          class:list={[
+            "pb-3",
+            i > 0 &&
+              "pt-3 border-t border-dashed border-hairline dark:border-hairline-dark",
+          ]}
+        >
+          <InlineLink
+            href={item.link}
+            classes="font-bold text-accent dark:text-accent-dark"
+          >
+            → {item.name}
+          </InlineLink>
+          <p class="text-sm text-muted dark:text-muted-dark">{item.content}</p>
+        </li>
+      ))}
     </ul>
+    <p class="pt-4 text-muted dark:text-muted-dark">
+      $ <span class="cursor" aria-hidden="true" />
+    </p>
   </CustomSection>
 </Layout>

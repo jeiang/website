@@ -6,28 +6,54 @@ import InlineLink from "../components/InlineLink.astro";
 const interests = [
   "Nix/NixOS & Linux",
   "Rust, Go, Zig, Java, C & Kotlin",
-  "Microcontrollers (ESP and Arduino)",
-  "Shell Scripting (Bash, Fish, Powershell)",
+  "Microcontrollers (ESP & Arduino)",
+  "Shell scripting (Bash, Fish, PowerShell)",
 ];
 
 const stuffIWorkedOn = [
   {
-    content: "My NixOS dotfiles for my personal computer and the server.",
+    name: "garret",
+    link: "https://github.com/jeiang/garret",
+    content:
+      "A single-tenant Nix binary cache: an OIDC-protected pusher and a public puller, colocated on one host over SQLite + S3. The successor to attic for my infrastructure.",
+  },
+  {
+    name: "rip",
+    link: "https://github.com/jeiang/ripper",
+    content:
+      "A rip-style trash CLI for Linux that handles bind mounts and btrfs subvolumes correctly, for NixOS impermanence setups.",
+  },
+  {
+    name: "erdtree (fork)",
+    link: "https://github.com/jeiang/erdtree",
+    content:
+      "My maintained fork of the multi-threaded filesystem and disk-usage utility; fixes bugs and adds features requested in upstream issues.",
+  },
+  {
+    name: "dotfiles",
     link: "https://github.com/jeiang/.dotfiles",
+    content: "My NixOS configuration for my personal computer and the server.",
   },
   {
-    content: "A simple mod manager for Marvel Rivals.",
+    name: "rivals-mod-manager",
     link: "https://github.com/jeiang/rivals-mod-manager",
-  },
-  { content: "This website.", link: "https://github.com/jeiang/website" },
-  {
-    content: "A very incomplete 6502 emulator.",
-    link: "https://github.com/jeiang/6502-emulator",
+    content: "A simple mod manager for Marvel Rivals.",
   },
   {
+    name: "wallpaper-finder",
+    link: "https://github.com/jeiang/wallpaper-finder",
     content:
       "A tool for finding wallpapers of a given aspect ratio (can search 300+ GB of photos in a few seconds).",
-    link: "https://github.com/jeiang/wallpaper-finder",
+  },
+  {
+    name: "6502-emulator",
+    link: "https://github.com/jeiang/6502-emulator",
+    content: "A very incomplete 6502 emulator.",
+  },
+  {
+    name: "This website",
+    link: "https://github.com/jeiang/website",
+    content: "The site you're looking at, built with Astro and Tailwind.",
   },
 ];
 ---
@@ -41,19 +67,24 @@ const stuffIWorkedOn = [
     </p>
   </CustomSection>
   <CustomSection title="Tech I use">
-    <ul class="list-disc pl-6 list-outside">
-      {interests.map((item) => <li>{item}</li>)}
+    <ul class="flex flex-wrap gap-2">
+      {interests.map((item) => (
+        <li class="border-2 rounded-full px-3 py-1 text-base border-dark dark:border-light">
+          {item}
+        </li>
+      ))}
     </ul>
   </CustomSection>
   <CustomSection title="Stuff I've worked on">
-    <ul class="list-disc pl-6 list-outside">
-      {
-        stuffIWorkedOn.map((item) => (
-          <li>
-            {item.content} (<InlineLink href={item.link}>link</InlineLink>)
-          </li>
-        ))
-      }
+    <ul class="flex flex-col gap-3">
+      {stuffIWorkedOn.map((item) => (
+        <li class="border-2 rounded-lg p-4 border-dark dark:border-light">
+          <InlineLink href={item.link} classes="font-bold no-underline">
+            {item.name}
+          </InlineLink>
+          <p class="text-base pt-1">{item.content}</p>
+        </li>
+      ))}
     </ul>
   </CustomSection>
 </Layout>

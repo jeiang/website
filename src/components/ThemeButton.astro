@@ -5,12 +5,13 @@ import { Icon } from "astro-icon/components";
 <theme-button>
   <button
     id="theme-selector"
-    class="py-2 h-full px-4 border-2 rounded border-dark dark:border-light"
-    role="presentation">
-      <Icon data-icon="system" size={24} class="hidden" name="computer" />
-      <Icon data-icon="dark" size={24} class="hidden" name="moon" />
-      <Icon data-icon="light" size={24} class="hidden" name="sun" />
-    </button>
+    class="py-2 h-full px-4 border-2 rounded-lg border-dark dark:border-light"
+    role="presentation"
+  >
+    <Icon data-icon="system" size={24} class="hidden" name="computer" />
+    <Icon data-icon="dark" size={24} class="hidden" name="moon" />
+    <Icon data-icon="light" size={24} class="hidden" name="sun" />
+  </button>
 </theme-button>
 
 <script>
@@ -23,8 +24,10 @@ import { Icon } from "astro-icon/components";
             ? "dark"
             : "system";
       const currentThemeIcon = this.querySelector(`svg[data-icon="${theme}"]`);
-      const otherIcons = this.querySelectorAll(`button > :not(svg[data-icon="${theme}"])`)
-      otherIcons.forEach(node => node.classList.add("hidden"));
+      const otherIcons = this.querySelectorAll(
+        `button > :not(svg[data-icon="${theme}"])`,
+      );
+      otherIcons.forEach((node) => node.classList.add("hidden"));
       currentThemeIcon?.classList.remove("hidden");
     }
 

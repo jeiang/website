@@ -3,8 +3,11 @@ import LinkButton from "./LinkButton.astro";
 import ThemeButton from "./ThemeButton.astro";
 ---
 
-<header class="sticky top-0 z-50 px-6 py-4 border-b-4 w-full max-w-xl bg-light dark:bg-dark" transition:persist>
-  <h1 class="text-4xl py-4 font-header font-bold">Aidan Pinard</h1>
+<header
+  class="sticky top-0 z-50 px-6 py-4 border-b-2 w-full max-w-xl bg-light dark:bg-dark border-dark dark:border-light"
+  transition:persist
+>
+  <h1 class="text-4xl pb-3 font-header font-bold">Aidan Pinard</h1>
   <div class="flex flex-row">
     <nav class="flex flex-grow flex-row space-x-3">
       <LinkButton href="/">Home</LinkButton>

@@ -24,15 +24,18 @@ const links = [
 
 <Layout title="Contact" description="Contact me!">
   <CustomSection title="Contact Me">
-    <p class="py-2">You can contact me (or see what I'm up to) via:</p>
-    <ul class="list-disc list-inside">
-      {
-        links.map((item) => (
-          <li>
-            <InlineLink href={item.link}>{item.content}</InlineLink>
-          </li>
-        ))
-      }
+    <p class="pb-4">You can contact me (or see what I'm up to) via:</p>
+    <ul class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+      {links.map((item) => (
+        <li>
+          <InlineLink
+            href={item.link}
+            classes="block border-2 rounded-lg px-4 py-2 no-underline hover:bg-dark hover:text-light dark:hover:bg-light dark:hover:text-dark border-dark dark:border-light"
+          >
+            {item.content}
+          </InlineLink>
+        </li>
+      ))}
     </ul>
   </CustomSection>
 </Layout>

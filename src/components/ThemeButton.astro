@@ -1,21 +1,14 @@
 ---
-import { Icon } from "astro-icon/components";
 ---
 
 <theme-button>
   <button
     aria-label="Toggle color theme"
-    class="py-1 px-2 border rounded border-hairline dark:border-hairline-dark"
+    class="font-mono text-sm hover:text-accent dark:hover:text-accent-dark"
   >
-    <span data-theme-icon="system">
-      <Icon name="computer" size={24} />
-    </span>
-    <span data-theme-icon="light">
-      <Icon name="sun" size={24} />
-    </span>
-    <span data-theme-icon="dark">
-      <Icon name="moon" size={24} />
-    </span>
+    <span data-theme-icon="system">[~]</span>
+    <span data-theme-icon="light">[+]</span>
+    <span data-theme-icon="dark">[-]</span>
   </button>
 </theme-button>
 

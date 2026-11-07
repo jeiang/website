@@ -5,8 +5,8 @@
     # The systems the node_modules FOD has a hash for are the systems
     # this flake supports; there is no fallback.
     nodeModulesHashes = {
-      x86_64-linux = "sha256-HGEjFhGi7/FTqewVvbISTOIKQP6yfXL3YHRMbOrlts4=";
-      aarch64-darwin = "sha256-ZhJOu9Rzl8AHL6W8M9y3zFiqDOheyu98oaDDCVaNSDE=";
+      x86_64-linux = "sha256-Cuiux2YlR47z1lQdOlb2dd0wAi9efkKthsUx+73G6a4=";
+      aarch64-darwin = "sha256-MKHl8Au+Nk9jsNh7SgpSVAmRX7N0pnXCOo5uE9KU3BU=";
     };
     systems = builtins.attrNames nodeModulesHashes;
     forAllSystems = f:

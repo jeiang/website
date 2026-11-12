@@ -20,6 +20,8 @@
           bun
           astro-language-server
           typescript-language-server
+          tailwindcss-language-server
+          nixd
         ];
       };
     });
